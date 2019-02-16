@@ -15943,10 +15943,10 @@ Dot test passed, v^T(Opu)=-22.033743 - u^T(Op^Tv)=-22.033743
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="prompt input_prompt">In&nbsp;[63]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bl</span> <span class="o">=</span> <span class="n">Block</span><span class="p">([[</span><span class="n">MatrixMult</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">))),</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">Identity</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bl</span> <span class="o">=</span> <span class="n">Block</span><span class="p">([[</span><span class="n">MatrixMult</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))),</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">Identity</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
             <span class="p">[</span><span class="n">Zero</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>                    <span class="n">Diagonal</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">5</span><span class="p">))],</span>
             <span class="p">[</span><span class="n">Identity</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>                <span class="n">Diagonal</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)]])</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">bl</span><span class="p">)</span>
@@ -15974,83 +15974,14 @@ Dot test passed, v^T(Opu)=-22.033743 - u^T(Op^Tv)=-22.033743
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;15x6 VStack with dtype=float64&gt;
+<pre>&lt;15x10 VStack with dtype=float64&gt;
+[ 3.  3.  3.  3.  3. -2. -2. -2. -2. -2. -1. -1. -1. -1. -1.]
+&lt;15x15 VStack with dtype=float64&gt;
+[ 1.  1.  1.  1.  1.  2.  2.  2.  2.  2. -1. -1. -1. -1. -1.]
 </pre>
 </div>
 </div>
 
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-61-2ded6f04c1a4&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">      3</span>             [Identity(5),                Diagonal(-2*np.ones(5), dtype=np.float64)]])
-<span class="ansi-green-intense-fg ansi-bold">      4</span> print<span class="ansi-blue-fg">(</span>bl<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">----&gt; 5</span><span class="ansi-red-fg"> </span>print<span class="ansi-blue-fg">(</span>bl<span class="ansi-blue-fg">*</span>np<span class="ansi-blue-fg">.</span>ones<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">10</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      6</span> 
-<span class="ansi-green-intense-fg ansi-bold">      7</span> bl = Block([[Identity(5), Zero(5),     Zero(5)],
-
-<span class="ansi-green-fg">~/anaconda/envs/pylops/lib/python3.7/site-packages/scipy/sparse/linalg/interface.py</span> in <span class="ansi-cyan-fg">__mul__</span><span class="ansi-blue-fg">(self, x)</span>
-<span class="ansi-green-intense-fg ansi-bold">    335</span> 
-<span class="ansi-green-intense-fg ansi-bold">    336</span>     <span class="ansi-green-fg">def</span> __mul__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> x<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 337</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>dot<span class="ansi-blue-fg">(</span>x<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    338</span> 
-<span class="ansi-green-intense-fg ansi-bold">    339</span>     <span class="ansi-green-fg">def</span> dot<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> x<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-
-<span class="ansi-green-fg">~/anaconda/envs/pylops/lib/python3.7/site-packages/scipy/sparse/linalg/interface.py</span> in <span class="ansi-cyan-fg">dot</span><span class="ansi-blue-fg">(self, x)</span>
-<span class="ansi-green-intense-fg ansi-bold">    360</span> 
-<span class="ansi-green-intense-fg ansi-bold">    361</span>             <span class="ansi-green-fg">if</span> x<span class="ansi-blue-fg">.</span>ndim <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">1</span> <span class="ansi-green-fg">or</span> x<span class="ansi-blue-fg">.</span>ndim <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">2</span> <span class="ansi-green-fg">and</span> x<span class="ansi-blue-fg">.</span>shape<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 362</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>matvec<span class="ansi-blue-fg">(</span>x<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    363</span>             <span class="ansi-green-fg">elif</span> x<span class="ansi-blue-fg">.</span>ndim <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">2</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    364</span>                 <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>matmat<span class="ansi-blue-fg">(</span>x<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/anaconda/envs/pylops/lib/python3.7/site-packages/scipy/sparse/linalg/interface.py</span> in <span class="ansi-cyan-fg">matvec</span><span class="ansi-blue-fg">(self, x)</span>
-<span class="ansi-green-intense-fg ansi-bold">    215</span> 
-<span class="ansi-green-intense-fg ansi-bold">    216</span>         <span class="ansi-green-fg">if</span> x<span class="ansi-blue-fg">.</span>shape <span class="ansi-blue-fg">!=</span> <span class="ansi-blue-fg">(</span>N<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">and</span> x<span class="ansi-blue-fg">.</span>shape <span class="ansi-blue-fg">!=</span> <span class="ansi-blue-fg">(</span>N<span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 217</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">raise</span> ValueError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;dimension mismatch&#39;</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    218</span> 
-<span class="ansi-green-intense-fg ansi-bold">    219</span>         y <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_matvec<span class="ansi-blue-fg">(</span>x<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">ValueError</span>: dimension mismatch</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dt</span> <span class="o">=</span> <span class="mf">0.005</span>
-<span class="n">nt</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span>
-<span class="n">f0</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">nfft</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">10</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">f0</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
-
-<span class="n">FFTop</span> <span class="o">=</span> <span class="n">pylops</span><span class="o">.</span><span class="n">signalprocessing</span><span class="o">.</span><span class="n">FFT</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="n">nt</span><span class="p">,</span> <span class="n">nfft</span><span class="o">=</span><span class="n">nfft</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
-<span class="n">D</span> <span class="o">=</span> <span class="n">FFTop</span><span class="o">*</span><span class="n">d</span>
-<span class="n">dadj</span> <span class="o">=</span> <span class="n">FFTop</span><span class="o">.</span><span class="n">H</span><span class="o">*</span><span class="n">D</span>
-
-<span class="n">FFTop1</span> <span class="o">=</span> <span class="n">pylops</span><span class="o">.</span><span class="n">signalprocessing</span><span class="o">.</span><span class="n">FFT</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="n">nt</span><span class="p">,</span> <span class="n">nfft</span><span class="o">=</span><span class="n">nfft</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;fftw&#39;</span><span class="p">)</span>
-<span class="n">D1</span> <span class="o">=</span> <span class="n">FFTop1</span><span class="o">*</span><span class="n">d</span>
-<span class="n">d1adj</span> <span class="o">=</span> <span class="n">FFTop1</span><span class="o">.</span><span class="n">H</span><span class="o">*</span><span class="n">D</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">D</span><span class="o">-</span><span class="n">D1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dadj</span><span class="o">-</span><span class="n">d1adj</span><span class="p">)</span>
-<span class="n">dottest</span><span class="p">(</span><span class="n">FFTop</span><span class="p">,</span> <span class="n">nfft</span><span class="p">,</span> <span class="n">nt</span><span class="p">,</span> <span class="n">complexflag</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">dottest</span><span class="p">(</span><span class="n">FFTop1</span><span class="p">,</span> <span class="n">nfft</span><span class="p">,</span> <span class="n">nt</span><span class="p">,</span> <span class="n">complexflag</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
-</div>
 </div>
 </div>
 
