@@ -11793,13 +11793,11 @@ div#notebook {
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">pylops</span>
 
+<span class="kn">from</span> <span class="nn">pylops.waveeqprocessing</span> <span class="k">import</span> <span class="n">MDC</span><span class="p">,</span> <span class="n">MDD</span>
 <span class="kn">from</span> <span class="nn">pylops.utils.tapers</span> <span class="k">import</span> <span class="n">taper3d</span>
 <span class="kn">from</span> <span class="nn">pylops.utils.wavelets</span> <span class="k">import</span> <span class="n">ricker</span>
 <span class="kn">from</span> <span class="nn">pylops.utils.seismicevents</span> <span class="k">import</span> <span class="n">makeaxis</span><span class="p">,</span> <span class="n">hyperbolic2d</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11866,8 +11864,8 @@ inversion using synthetic data.</p>
 <span class="n">Gwav_fft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">Gwav2</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">Gwav_fft</span> <span class="o">=</span> <span class="n">Gwav_fft</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nfmax&#39;</span><span class="p">]]</span>
 
-<span class="n">MDCop</span> <span class="o">=</span> <span class="n">pylops</span><span class="o">.</span><span class="n">waveeqprocessing</span><span class="o">.</span><span class="n">MDC</span><span class="p">(</span><span class="n">Gwav_fft</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                    <span class="n">dt</span><span class="o">=</span><span class="mf">0.004</span><span class="p">,</span> <span class="n">dr</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+<span class="n">MDCop</span> <span class="o">=</span> <span class="n">MDC</span><span class="p">(</span><span class="n">Gwav_fft</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">dt</span><span class="o">=</span><span class="mf">0.004</span><span class="p">,</span> <span class="n">dr</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
 
 <span class="c1"># Create data</span>
 <span class="n">d</span> <span class="o">=</span> <span class="n">MDCop</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
@@ -11875,25 +11873,6 @@ inversion using synthetic data.</p>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/matteoravasi/anaconda/envs/pylops/lib/python3.7/site-packages/scipy/signal/signaltools.py:1344: FutureWarning: Using a non-tuple sequence for multidimensional indexing is deprecated; use `arr[tuple(seq)]` instead of `arr[seq]`. In the future this will be interpreted as an array index, `arr[np.array(seq)]`, which will result either in an error or a different result.
-  out = out_full[ind]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12003,12 +11982,12 @@ and invert back for our input model</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">minv</span><span class="p">,</span> <span class="n">madj</span><span class="p">,</span> <span class="n">psfinv</span><span class="p">,</span> <span class="n">psfadj</span> <span class="o">=</span> \
-    <span class="n">pylops</span><span class="o">.</span><span class="n">waveeqprocessing</span><span class="o">.</span><span class="n">MDD</span><span class="p">(</span><span class="n">Gwav</span><span class="p">,</span> <span class="n">d</span><span class="p">[:,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:],</span>
-                                <span class="n">dt</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">],</span> <span class="n">dr</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">],</span>
-                                <span class="n">nfmax</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nfmax&#39;</span><span class="p">],</span> <span class="n">wav</span><span class="o">=</span><span class="n">wav</span><span class="p">,</span>
-                                <span class="n">twosided</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">adjoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">psf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex64&#39;</span><span class="p">,</span> <span class="n">dottest</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">damp</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">iter_lim</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">MDD</span><span class="p">(</span><span class="n">Gwav</span><span class="p">,</span> <span class="n">d</span><span class="p">[:,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:],</span>
+        <span class="n">dt</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">],</span> <span class="n">dr</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">],</span>
+        <span class="n">nfmax</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nfmax&#39;</span><span class="p">],</span> <span class="n">wav</span><span class="o">=</span><span class="n">wav</span><span class="p">,</span>
+        <span class="n">twosided</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">adjoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">psf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex64&#39;</span><span class="p">,</span> <span class="n">dottest</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">damp</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">iter_lim</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">colspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -12107,11 +12086,12 @@ the computation time of the deconvolution</p>
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">minvprec</span> <span class="o">=</span> <span class="n">pylops</span><span class="o">.</span><span class="n">waveeqprocessing</span><span class="o">.</span><span class="n">MDD</span><span class="p">(</span><span class="n">Gwav</span><span class="p">,</span> <span class="n">d</span><span class="p">[:,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:],</span>
-                                       <span class="n">dt</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">],</span> <span class="n">dr</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">],</span> <span class="n">nfmax</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nfmax&#39;</span><span class="p">],</span> <span class="n">wav</span><span class="o">=</span><span class="n">wav</span><span class="p">,</span>
-                                       <span class="n">twosided</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">adjoint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">psf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                       <span class="n">causality_precond</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex64&#39;</span><span class="p">,</span>
-                                       <span class="n">dottest</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">damp</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">iter_lim</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">minvprec</span> <span class="o">=</span> \
+    <span class="n">MDD</span><span class="p">(</span><span class="n">Gwav</span><span class="p">,</span> <span class="n">d</span><span class="p">[:,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:],</span>
+        <span class="n">dt</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">],</span> <span class="n">dr</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">],</span> <span class="n">nfmax</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nfmax&#39;</span><span class="p">],</span> <span class="n">wav</span><span class="o">=</span><span class="n">wav</span><span class="p">,</span>
+        <span class="n">twosided</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">adjoint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">psf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">causality_precond</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex64&#39;</span><span class="p">,</span>
+        <span class="n">dottest</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">damp</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">iter_lim</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">colspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
