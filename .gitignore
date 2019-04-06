@@ -6,4 +6,3 @@ __pycache__/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-save_notebooks_html.py
