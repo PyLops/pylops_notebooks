@@ -13147,6 +13147,7 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
@@ -13176,21 +13177,44 @@ div#notebook {
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;10&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;10&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;NUMBA_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;10&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;NUMBA_DEVELOPER_MODE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Slant-stack">Slant stack<a class="anchor-link" href="#Slant-stack">&#182;</a></h2>
+<h2 id="Slant-stack-2d">Slant stack 2d<a class="anchor-link" href="#Slant-stack-2d">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Initialization</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">par</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nt&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;nhx&#39;</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span> <span class="s1">&#39;ny&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;npx&#39;</span><span class="p">:</span><span class="mi">31</span><span class="p">,</span> <span class="s1">&#39;pxmax&#39;</span><span class="p">:</span><span class="mf">1e-2</span><span class="p">,</span>
-       <span class="s1">&#39;centeredh&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;kind&#39;</span><span class="p">:</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span>
-       <span class="s1">&#39;interp&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;onthefly&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">}</span> <span class="c1"># linear, centered, linear interp</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">par</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nt&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;nhx&#39;</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span> <span class="s1">&#39;nhy&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;npx&#39;</span><span class="p">:</span><span class="mi">31</span><span class="p">,</span> <span class="s1">&#39;npy&#39;</span><span class="p">:</span><span class="mi">21</span><span class="p">,</span> <span class="s1">&#39;pxmax&#39;</span><span class="p">:</span><span class="mf">1e-2</span><span class="p">,</span>
+       <span class="s1">&#39;centeredh&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;kind&#39;</span><span class="p">:</span> <span class="s1">&#39;linear&#39;</span><span class="p">}</span> <span class="c1"># linear, centered, linear interp</span>
 
 <span class="n">dt</span><span class="p">,</span> <span class="n">dh</span> <span class="o">=</span> <span class="mf">0.005</span><span class="p">,</span> <span class="mi">1</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">dt</span>
@@ -13198,17 +13222,13 @@ div#notebook {
 <span class="n">px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;pxmax&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">])</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]))</span>
 <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
-              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span>
-              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
-        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
  
-<span class="n">y</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-<span class="n">xadj</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-
-<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
-<span class="o">%</span><span class="k">timeit</span> -n 10 Rop.H * y.flatten()
+<span class="c1"># numpy</span>
+<span class="o">%</span><span class="k">timeit</span> -n 10  Radon2D(t, h, px, centeredh=par[&#39;centeredh&#39;], interp=False, kind=par[&#39;kind&#39;], engine=&#39;numpy&#39;, dtype=&#39;float64&#39;)
+<span class="c1"># numba</span>
+<span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span> <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="o">%</span><span class="k">timeit</span> -n 10  Radon2D(t, h, px, centeredh=par[&#39;centeredh&#39;], interp=False, kind=par[&#39;kind&#39;], engine=&#39;numba&#39;, dtype=&#39;float64&#39;)
 </pre></div>
 
     </div>
@@ -13225,8 +13245,381 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>7.54 ms ± 660 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
-9.91 ms ± 1.28 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre>12.1 ms ± 4.2 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+343 µs ± 4.38 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Numpy vs numba with pre-computed table</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadj</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>10.8 ms ± 2.29 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+10.2 ms ± 101 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ynb</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadjnb</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>90.9 µs ± 3.76 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+115 µs ± 35.1 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ynb</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xadj</span><span class="o">-</span><span class="n">xadjnb</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.0
+0.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadj</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>16.3 ms ± 155 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+18.1 ms ± 480 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ynb</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadjnb</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>40.5 µs ± 1.24 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+46.1 µs ± 9.87 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ynb</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xadj</span><span class="o">-</span><span class="n">xadjnb</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.0
+4.821487820240936e-15
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Numpy vs numba with on-the-fly computation</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="n">onthefly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadj</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>16.4 ms ± 206 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+17.6 ms ± 797 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span> <span class="n">onthefly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ynb</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadjnb</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>253 µs ± 1.5 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+787 µs ± 20.3 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ynb</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xadj</span><span class="o">-</span><span class="n">xadjnb</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.0
+0.0
 </pre>
 </div>
 </div>
@@ -13241,16 +13634,17 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
-              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="n">onthefly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
               <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
 <span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
         <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="n">y1</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-<span class="n">xadj1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span> <span class="o">*</span> <span class="n">y1</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadj</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
 <span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
-<span class="o">%</span><span class="k">timeit</span> -n 10 Rop.H * y.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
 </pre></div>
 
     </div>
@@ -13267,12 +13661,757 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>70.5 µs ± 12.2 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
-101 µs ± 24.3 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre>24.9 ms ± 114 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+27.3 ms ± 309 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon2D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span> <span class="n">onthefly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ynb</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadjnb</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>258 µs ± 1.92 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+779 µs ± 11.2 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ynb</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xadj</span><span class="o">-</span><span class="n">xadjnb</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.0
+4.932377424477932e-15
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Slant-stack-3d">Slant stack 3d<a class="anchor-link" href="#Slant-stack-3d">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Initialization</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dt</span><span class="p">,</span> <span class="n">dh</span> <span class="o">=</span> <span class="mf">0.005</span><span class="p">,</span> <span class="mi">1</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">dt</span> 
+<span class="n">hx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">dh</span>
+<span class="n">hy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhy&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">dh</span>
+<span class="n">px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;pxmax&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">])</span>
+<span class="n">py</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;pxmax&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]))</span>
+<span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+ 
+<span class="c1"># numpy</span>
+<span class="o">%</span><span class="k">timeit</span> -n 3  Radon3D(t, hy, hx, py, px, centeredh=par[&#39;centeredh&#39;], interp=False, kind=par[&#39;kind&#39;], dtype=&#39;float64&#39;)
+<span class="c1"># numba</span>
+<span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span> <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="o">%</span><span class="k">timeit</span> -n 3  Radon3D(t, hy, hx, py, px, centeredh=par[&#39;centeredh&#39;], interp=False, kind=par[&#39;kind&#39;], engine=&#39;numba&#39;, dtype=&#39;float64&#39;)
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>212 ms ± 921 µs per loop (mean ± std. dev. of 7 runs, 3 loops each)
+109 ms ± 5.14 ms per loop (mean ± std. dev. of 7 runs, 3 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># numba</span>
+<span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span> <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="o">%</span><span class="k">timeit</span> -n 3  Radon3D(t, hy, hx, py, px, centeredh=par[&#39;centeredh&#39;], interp=False, kind=par[&#39;kind&#39;], engine=&#39;numba&#39;, dtype=&#39;float64&#39;)
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>110 ms ± 2.99 ms per loop (mean ± std. dev. of 7 runs, 3 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Numpy vs numba with pre-computed table</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadj</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>238 ms ± 491 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+240 ms ± 267 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ynb</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadjnb</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2.42 ms ± 21.2 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+The slowest run took 5.10 times longer than the fastest. This could mean that an intermediate result is being cached.
+796 µs ± 447 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ynb</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xadj</span><span class="o">-</span><span class="n">xadjnb</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.0
+0.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadj</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>401 ms ± 348 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+422 ms ± 355 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ynb</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadjnb</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>3.4 ms ± 17.6 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+393 µs ± 35.8 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ynb</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xadj</span><span class="o">-</span><span class="n">xadjnb</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.0
+4.146737221823692e-13
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Numpy vs numba with on-the-fly computation</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">onthefly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadj</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>462 ms ± 251 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+478 ms ± 656 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span> <span class="n">onthefly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ynb</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadjnb</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>103 ms ± 2.24 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+419 ms ± 13.2 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ynb</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xadj</span><span class="o">-</span><span class="n">xadjnb</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.0
+0.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">onthefly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadj</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>651 ms ± 557 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rop</span> <span class="o">=</span> <span class="n">Radon3D</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hy</span><span class="p">,</span> <span class="n">hx</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">centeredh</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;centeredh&#39;</span><span class="p">],</span>
+              <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;numba&#39;</span><span class="p">,</span> <span class="n">onthefly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+<span class="n">dottest</span><span class="p">(</span><span class="n">Rop</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nhx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="s1">&#39;npy&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;npx&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">],</span>
+        <span class="n">complexflag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ynb</span> <span class="o">=</span> <span class="n">Rop</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">Rop1</span> <span class="o">=</span> <span class="n">Rop</span><span class="o">.</span><span class="n">H</span>
+<span class="n">xadjnb</span> <span class="o">=</span> <span class="n">Rop1</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop * x.flatten()
+<span class="o">%</span><span class="k">timeit</span> -n 10 Rop1 * y.flatten()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ynb</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xadj</span><span class="o">-</span><span class="n">xadjnb</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Other stuff, work in progress</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">vectorize</span><span class="p">,</span> <span class="n">float64</span>
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">fdouble</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+<span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">passfunction</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">passfunction</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">fdouble</span><span class="p">,</span> <span class="n">out</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">vectorize</span><span class="p">,</span> <span class="n">guvectorize</span><span class="p">,</span> <span class="n">float64</span><span class="p">,</span> <span class="n">int64</span><span class="p">,</span> <span class="n">float32</span><span class="p">,</span> <span class="n">int32</span>
+
+<span class="k">def</span> <span class="nf">_hyperbolic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">px</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">t</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">px</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="nd">@vectorize</span><span class="p">([</span><span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">,</span> <span class="n">float64</span><span class="p">,</span> <span class="n">float64</span><span class="p">),</span>
+            <span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">,</span> <span class="n">int64</span><span class="p">,</span> <span class="n">float64</span><span class="p">),</span>
+            <span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">,</span> <span class="n">int32</span><span class="p">,</span> <span class="n">float64</span><span class="p">),</span>
+            <span class="n">float32</span><span class="p">(</span><span class="n">float32</span><span class="p">,</span> <span class="n">float32</span><span class="p">,</span> <span class="n">float32</span><span class="p">),</span>
+            <span class="n">float32</span><span class="p">(</span><span class="n">float32</span><span class="p">,</span> <span class="n">int32</span><span class="p">,</span> <span class="n">float32</span><span class="p">)],</span> 
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_hyperbolic_numba</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">px</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">t</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">px</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="nd">@vectorize</span><span class="p">([</span><span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">,</span> <span class="n">float64</span><span class="p">,</span> <span class="n">float64</span><span class="p">),</span>
+            <span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">,</span> <span class="n">int64</span><span class="p">,</span> <span class="n">float64</span><span class="p">),</span>
+            <span class="n">float64</span><span class="p">(</span><span class="n">float64</span><span class="p">,</span> <span class="n">int32</span><span class="p">,</span> <span class="n">float64</span><span class="p">),</span>
+            <span class="n">float32</span><span class="p">(</span><span class="n">float32</span><span class="p">,</span> <span class="n">float32</span><span class="p">,</span> <span class="n">float32</span><span class="p">),</span>
+            <span class="n">float32</span><span class="p">(</span><span class="n">float32</span><span class="p">,</span> <span class="n">int32</span><span class="p">,</span> <span class="n">float32</span><span class="p">)],</span> 
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;parallel&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_hyperbolic_numba1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">px</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">t</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">px</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">t0</span><span class="o">=</span><span class="mi">10</span>
+<span class="n">px</span><span class="o">=</span><span class="mf">0.1</span>
+
+<span class="o">%</span><span class="k">timeit</span> -n 10 _hyperbolic(x, t0, px)
+<span class="o">%</span><span class="k">timeit</span> -n 10 _hyperbolic_numba(x, t0, px)
+<span class="o">%</span><span class="k">timeit</span> -n 10 _hyperbolic_numba1(x, t0, px)
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@guvectorize</span><span class="p">([(</span><span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">,</span> <span class="n">float64</span><span class="p">[:])],</span> <span class="s1">&#39;(n),()-&gt;(n)&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span>
+        
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="n">g</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">stencil</span>
+
+<span class="k">def</span> <span class="nf">kernel</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="nd">@stencil</span>
+<span class="k">def</span> <span class="nf">kernel1</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">input_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="o">%</span><span class="k">timeit</span> -n 2 kernel(input_arr)
+<span class="o">%</span><span class="k">timeit</span> -n 2 kernel1(input_arr)
+</pre></div>
+
+    </div>
 </div>
 </div>
 
