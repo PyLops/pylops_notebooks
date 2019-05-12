@@ -5,4 +5,8 @@ __pycache__/
 .DS_Store
 
 # Jupyter Notebook
+notready
 .ipynb_checkpoints
+
+# Parallel stuff
+dask-worker-space
