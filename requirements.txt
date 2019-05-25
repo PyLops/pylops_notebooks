@@ -1,0 +1,10 @@
+numpy>=1.15.0
+scipy
+numba
+pyfftw
+scikit-fmm
+spgl1
+matplotlib
+ipython
+jupyter
+pylops
