@@ -1,6 +1,5 @@
 # PyLops notebooks
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/mrava87/pylops_notebooks/master)
-https://mybinder.org/v2/gh/mrava87/pylops_notebooks/master
 
 This repository is a collection of notebooks used as part of the development of pylops library (https://github.com/equinor/pylops) as well as in official publications or courses. Both .ipynb files and .html files are uploaded, with the latter showing both code and results - download the files and open them in your local browser.
 
