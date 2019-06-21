@@ -10,3 +10,6 @@ notready
 
 # Parallel stuff
 dask-worker-space
+
+# Big data
+data/seismicinversion
