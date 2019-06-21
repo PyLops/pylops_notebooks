@@ -12,4 +12,4 @@ notready
 dask-worker-space
 
 # Big data
-data/seismicinversion
+data/seismicinversion/*segy
