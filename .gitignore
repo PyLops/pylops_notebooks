@@ -13,3 +13,4 @@ dask-worker-space
 
 # Big data
 data/seismicinversion/*segy
+data/marchenko/3D*
