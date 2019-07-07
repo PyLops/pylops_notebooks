@@ -15,3 +15,7 @@ dask-worker-space
 # Big data
 data/seismicinversion/*segy
 data/marchenko/3D*
+
+# Figure ppts
+official/timisoara_summerschool_2019/figures.pptx
+data/marchenko/3D*
