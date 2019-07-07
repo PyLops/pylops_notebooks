@@ -6,7 +6,7 @@ HYDROLOGY, RISK & SAFETY AND RESERVOIR ENGINEERING](https://data-assimilation.co
 course.
 
 ## Slides
-Coming soon...
+Accesible at https://gitpitch.com/mrava87/pylops_notebooks?p=official/timisoara_summerschool_2019#/
 
 ## Notebooks
 Coming soon...
