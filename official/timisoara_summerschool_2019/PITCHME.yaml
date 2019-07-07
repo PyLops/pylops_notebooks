@@ -1,8 +1,8 @@
 # Layout
-layout : center-left
+layout : top-left
 
 # Look-and-Feel
-theme : white
+theme : sky
 theme-override : assets/css/PITCHME.css
 background-color : #ffffff;
 logo : official/timisoara_summerschool_2019/assets/images/logo.png
@@ -12,9 +12,9 @@ footnote : "Large scale inverse problems in geoscience"
 
 # Behavior
 transition : none
-published : true
-code-line-numbers : true
+published : false
 
 # Plugins
 charts : true
 mathjax : TeX-MML-AM_HTMLorMML-full
+code-line-numbers : true
