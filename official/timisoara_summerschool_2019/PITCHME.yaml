@@ -17,4 +17,4 @@ code-line-numbers : true
 
 # Plugins
 charts : true
-mathjax : TeX-AMS_HTML-full
+mathjax : TeX-MML-AM_HTMLorMML-full
