@@ -1,0 +1,20 @@
+# Layout
+layout : center-right
+
+# Look-and-Feel
+theme : night
+theme-override : assets/css/PITCHME.css
+background-color : #ffffff;
+logo : assets/images/logo.png
+logo-position : top-right
+highlight : ir-black
+footnote : "Large scale inverse problems in geoscience"
+
+# Behavior
+transition : none
+published : true
+code-line-numbers : true
+
+# Plugins
+charts : true
+mathjax : TeX-AMS_HTML-full
