@@ -147,7 +147,6 @@ References:
 
 +++?color=#ffffff
 @title[Basic 6]
-
 #### Inversion in practice
 
 @size[30px](Now that we know the analytical expressions, how do we find)
@@ -162,3 +161,9 @@ References:
 - **direct**: @size[26px](LU, QR, SVD...)
 - **iterative**: @size[26px](gradient based methods - CG, LSQR, GMRES...)
 @ulen
+
++++?color=#ffffff
+@title[Basic 7]
+#### Inversion in practice
+
+![Costfunction](assets/images/gradient_methods.png)
