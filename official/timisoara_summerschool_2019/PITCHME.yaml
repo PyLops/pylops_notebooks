@@ -1,13 +1,13 @@
 # Layout
-layout : center-right
+layout : center-left
 
 # Look-and-Feel
-theme : night
+theme : white
 theme-override : assets/css/PITCHME.css
 background-color : #ffffff;
 logo : assets/images/logo.png
 logo-position : top-right
-highlight : ir-black
+highlight : monokai
 footnote : "Large scale inverse problems in geoscience"
 
 # Behavior

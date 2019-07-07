@@ -1,4 +1,4 @@
----?color=#FFFFFF
+---?color=#ffffff
 @title[Title]
 
 ## @css[black](Large scale inverse problems in geoscience)

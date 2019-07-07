@@ -5,7 +5,7 @@
  * https://github.com/gitpitch/gitpitch/wiki/Slideshow-Custom-CSS
  */
 
-background-color: #bbff00;    /* Fully opaque */
+background-color: #ffffff;    /* Fully opaque */
 
 /* various types of text */
 .black {
@@ -40,20 +40,6 @@ background-color: #bbff00;    /* Fully opaque */
   color: #e49436;
 }
 
-
-/* various header types */
-.h1 { 
-    color: #000000;
-}
-
-.h2 { 
-    color: #000000;
-}
-
-
-.title { 
-    color: #000000;
-}
 
 .title-top-right {
     position: fixed;
