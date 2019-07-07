@@ -47,5 +47,6 @@ Seismic processing:
 
 Seismic inversion:
 `\[ n_x = n_y = 10^3, n_z = 800, \quad (dz = 5 m, t_{max} = 4000 m)
-\rightarrow \mathbf{G}: n_x \cdot n_y \cdot n_z^2 = 6.4 \cdot 10^{11} * 32 bit \sim 20 TB
+\]`
+`\[ \rightarrow \mathbf{G}: n_x \cdot n_y \cdot n_z^2 = 6.4 \cdot 10^{11} * 32 bit \sim 20 TB
 \]`
