@@ -2,7 +2,7 @@
 layout : center-left
 
 # Look-and-Feel
-theme : white
+theme: template
 theme-override : assets/css/PITCHME.css
 background-color : #ffffff;
 logo : official/timisoara_summerschool_2019/assets/images/logo.png
