@@ -41,10 +41,11 @@ How do you implement **D** without an explicit matrix?
 
 @ul
 
-- Seismic processing: `\[ \begin{split}
-n_S = n_R = 10^3, n_t = n_{fft} = 2 \cdot 10^3 (dt = 4 ms, t_{max} = 8 s) \\
-\rightarrow \mathbf{G}: n_S \cdot n_R \cdot \cdot n_{fft}^2 = 4 \cdot 10^{12} * 32 bit = 128 TB
-\end{split} \]`
+Seismic processing:
+`\[ n_S = n_R = 10^3, n_t = n_{fft} = 2 \cdot 10^3 (dt = 4 ms, t_{max} = 8 s)
+\]`
+`\[ \rightarrow \mathbf{G}: n_S \cdot n_R \cdot \cdot n_{fft}^2 = 4 \cdot 10^{12} * 32 bit = 128 TB
+\]`
 
 - Seismic inversion: `\[ n_x = n_y = 10^3, n_z = 800 (dz = 5 m, t_{max} = 4000 m)
 \rightarrow \mathbf{G}: n_x \cdot n_y \cdot \cdot n_z^2 = 6.4 \cdot 10^{11} * 32 bit \sim 20 TB
