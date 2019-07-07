@@ -1,6 +1,8 @@
 # Integrated Reservoir Management From Seismic Field Development Planning - UiS
 
-Guest lecture on inverse problems in geosciences.
+Guest lecture on inverse problems in geosciences at UiS, as part of the
+[Integrated Reservoir Management From Seismic Field Development Planning](https://www.uis.no/course/?code=PET585_1&path=en)
+course.
 
 ## Notebooks
 
