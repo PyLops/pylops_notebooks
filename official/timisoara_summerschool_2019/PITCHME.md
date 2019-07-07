@@ -166,4 +166,4 @@ References:
 @title[Basic 7]
 #### Inversion in practice
 
-![Costfunction](assets/images/gradient_methods.png)
+![Costfunction](official/timisoara_summerschool_2019/assets/images/gradient_methods.png)
