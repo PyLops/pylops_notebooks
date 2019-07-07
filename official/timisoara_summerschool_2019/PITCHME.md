@@ -62,7 +62,7 @@ Fundamental theory developed in the '60/'70
 
 - Mathematicians: @size[25px](general theory, shared with other applications e.g., ML, data assimilation)
 - Seismologists: @size[25px](inference of subsurface properties/behaviours from large set of data)
-- Atmosferic @size[25px](scientists: more concerned with data assimilation through time)
+- Atmosferic scientists: @size[25px](more concerned with data assimilation through time)
 
 @ulend
 

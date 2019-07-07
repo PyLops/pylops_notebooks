@@ -16,6 +16,6 @@ dask-worker-space
 data/seismicinversion/*segy
 data/marchenko/3D*
 
-# Figure ppts
+# Slides data assimilations summer school
 official/timisoara_summerschool_2019/figures.pptx
-data/marchenko/3D*
+official/timisoara_summerschool_2019/runlocal.sh
