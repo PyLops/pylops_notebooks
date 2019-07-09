@@ -16,7 +16,7 @@ theme-override : official/timisoara_summerschool_2019/assets/css/PITCHME.css
 background-color : #ffffff;
 logo : official/timisoara_summerschool_2019/assets/images/logo.png
 logo-position : top-right
-highlight : monokai
+highlight : white
 footnote : "Large scale inverse problems in geoscience"
 
 # Behavior

@@ -86,7 +86,7 @@ References:
 
 #### Forward model
 <br>
-`\[ \mathbf{d} = \mathbf{g} (\mathbf{m}) \quad / \quad \mathbf{d}_{[N \times 1]} = \mathbf{G}_{[N \times M]} \mathbf{m}_{[M \times 1]}
+`\[ \mathbf{d} = \mathbf{g} (\mathbf{m}) \quad / \quad \mathbf{d} = \mathbf{G} \mathbf{m}
 \]`
 
 @ul
@@ -103,7 +103,7 @@ References:
 
 #### Forward model
 <br>
-`\[ \mathbf{d} = \mathbf{g} (\mathbf{m}) \quad / \quad \mathbf{d}_{[N \times 1]} = \mathbf{G}_{[N \times M]} \mathbf{m}_{[M \times 1]}
+`\[ \mathbf{d} = \mathbf{g} (\mathbf{m}) \quad / \quad \mathbf{d} = \mathbf{G} \mathbf{m}
 \]`
 
 @size[30px](Unique and *easy* to compute, perhaps time consuming...)
@@ -134,7 +134,7 @@ References:
 
 @size[30px](Now that we know the analytical expressions, how do we find)
 
-`\[ \mathbf{G}^{-1} \quad \mathbf{G^H G}^{-1} \quad \mathbf{G G^H}^{-1}\]`
+`\[ \mathbf{G}^{-1} \quad (\mathbf{G^H G})^{-1} \quad (\mathbf{G G^H})^{-1}\]`
 
 @size[30px](Solutions studied in the fields of *Numerical analysis and Optimization*.)
 <br><br>
@@ -150,3 +150,71 @@ References:
 #### Inversion in practice
 
 ![Costfunction](official/timisoara_summerschool_2019/assets/images/gradient_methods.png)
+
++++?color=#ffffff
+@title[Inverse problems 8]
+#### Why iterative?
+
+<br>
+
+**G** is too large to be inverted (or solved directly)
+
+**G** is too large to be stored in memory
+<br><br>
+*Take on message:*
+`\[ \mathbf{m}_{est} = \sum_{i=0}^{N_{iter}} f(\mathbf{G}, \mathbf{d}, \mathbf{m}_0) \qquad \mathbf{G} \mathbf{m}, \mathbf{G}^H \mathbf{d}, (\mathbf{m}^T \mathbf{m} , \mathbf{d}^T \mathbf{d})\]`
+
+
+---?color=#ffffff
+@title[Linear operators 1]
+## @css[blue](Linear Operators)
+A piece of computer code  that can perform the *forward* and *adjoint* operations without
+the need to store an *explicit matrix*
+`\[  \mathbf{G} \mathbf{m}, \mathbf{G}^H \mathbf{d} \]`
+
+<br>
+
+@size[25px](Very powerful, sometimes underutilized concept
+BUT making sure forward and adjoint are adjoint to each other is not easy --> **DOT TEST**
+
++++?color=#ffffff
+@title[Linear operators 2]
+#### Ex: Diagonal
+<br>
+`\[ \mathbf{D} = \begin{bmatrix}
+            d_{1} & 0     & ... & 0 \\
+            0     & d_{2} & ... & 0 \\
+            ...                     \\
+            0     & 0 & ... & d_{N} \\
+        \end{bmatrix},
+        \mathbf{D}^T = \begin{bmatrix}
+            d_{1} & 0     & ... & 0 \\
+            0     & d_{2} & ... & 0 \\
+            ...                     \\
+            0     & 0 & ... & d_{N} \\
+        \end{bmatrix} \]`
+
+@snap[south span-90]
+@code[python zoom-13 code-max code-shadow](assets/codes/diagonal.py)
+@snapend
+
++++?color=#ffffff
+@title[Linear operators 3]
+#### Ex: First derivative
+<br>
+`\[ \mathbf{D} = \begin{bmatrix}
+            -1 & 1     & ... &  0 &0 \\
+            -0.5     & 0 &  0.5 & ... & 0 \\
+            ...                     \\
+            0     & 0 & ... & -1 & 1 \\
+        \end{bmatrix},
+        \mathbf{D}^T = \begin{bmatrix}
+            d_{1} & 0     & ... & 0 \\
+            0     & d_{2} & ... & 0 \\
+            ...                     \\
+            0     & 0 & ... & d_{N} \\
+        \end{bmatrix} \]`
+
+@snap[south span-90]
+@code[python zoom-13 code-max code-shadow](assets/codes/diagonal.py)
+@snapend
