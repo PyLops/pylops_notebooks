@@ -195,7 +195,7 @@ BUT making sure forward and adjoint are adjoint to each other is not easy --> **
         \end{bmatrix} \]`
 
 @snap[south span-90]
-@code[python zoom-13 code-max code-shadow](assets/codes/diagonal.py)
+@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/diagonal.py)
 @snapend
 
 +++?color=#ffffff
@@ -208,13 +208,9 @@ BUT making sure forward and adjoint are adjoint to each other is not easy --> **
             ...                     \\
             0     & 0 & ... & -1 & 1 \\
         \end{bmatrix},
-        \mathbf{D}^T = \begin{bmatrix}
-            d_{1} & 0     & ... & 0 \\
-            0     & d_{2} & ... & 0 \\
+     \mathbf{D}^t = \begin{bmatrix}
+            -1 & -0.5     & ... &  0 &0 \\
+            1     & 0 &  0.5 & ... & 0 \\
             ...                     \\
-            0     & 0 & ... & d_{N} \\
-        \end{bmatrix} \]`
-
-@snap[south span-90]
-@code[python zoom-13 code-max code-shadow](assets/codes/diagonal.py)
-@snapend
+            0     & 0 & ... & -0.5 & 1 \\
+        \end{bmatrix},\]`
