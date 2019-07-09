@@ -53,7 +53,7 @@ How do you implement **D** without an explicit matrix?
 \]`
 
 ---?color=#ffffff
-@title[Basic 1]
+@title[Inverse problems 1]
 ## @css[blue](Inverse problems)
 Fundamental theory developed in the '60/'70
 
@@ -67,7 +67,7 @@ Fundamental theory developed in the '60/'70
 @ulend
 
 +++?color=#ffffff
-@title[Basic 2]
+@title[Inverse problems 2]
 ## @css[blue](Inverse problems)
 References:
 <br><br>
@@ -82,11 +82,11 @@ References:
 
 
 +++?color=#ffffff
-@title[Basic 3]
+@title[Inverse problems 3]
 
 #### Forward model
 <br>
-`\[ \mathbf{d} = \mathbf{g} (\mathbf{m}) \quad / \quad \mathbf{d} = \mathbf{G} \mathbf{m}
+`\[ \mathbf{d} = \mathbf{g} (\mathbf{m}) \quad / \quad \mathbf{d}_{[N \times 1]} = \mathbf{G}_{[N \times M]} \mathbf{m}_{[M \times 1]}
 \]`
 
 @ul
@@ -99,11 +99,11 @@ References:
 
 
 +++?color=#ffffff
-@title[Basic 3]
+@title[Inverse problems 4]
 
 #### Forward model
 <br>
-`\[ \mathbf{d} = \mathbf{g} (\mathbf{m}) \quad / \quad \mathbf{d} = \mathbf{G} \mathbf{m}
+`\[ \mathbf{d} = \mathbf{g} (\mathbf{m}) \quad / \quad \mathbf{d}_{[N \times 1]} = \mathbf{G}_{[N \times M]} \mathbf{m}_{[M \times 1]}
 \]`
 
 @size[30px](Unique and *easy* to compute, perhaps time consuming...)
@@ -119,34 +119,17 @@ References:
 
 
 +++?color=#ffffff
-@title[Basic 4]
-
-<br>
-`\[ \mathbf{d}_{[N \times 1]} = \mathbf{G}_{[N \times M]} \mathbf{m}_{[M \times 1]}
-\]`
-<br>
+@title[Inverse problems 5]
 
 @ul
 
 - **square** (N = M): @size[26px](rarely the case in real life. Solution:) `\[ \mathbf{G}^{-1} \rightarrow \mathbf{m}_{est} = \mathbf{G}^{-1} \mathbf{d}  \]`
 - **overdetermined** (N &#62; M): @size[26px](most common case, robust to noise as more data points than model parameters. Least-squares solution:) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||_2 \rightarrow \mathbf{m}_{est} = (\mathbf{G^H G})^{-1} \mathbf{G^H} \mathbf{d} \]`
-@ulen
-
-+++?color=#ffffff
-@title[Basic 5]
-
-<br>
-`\[ \mathbf{d}_{[N \times 1]} = \mathbf{G}_{[N \times M]} \mathbf{m}_{[M \times 1]}
-\]`
-<br>
-
-@ul
-
 - **underdetermined** (N &#60; M): @size[26px](not ideal, but sometimes only option - e.g., MRI scan. Least-squares solution:) `\[ J = || \mathbf{m}||_2 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \rightarrow \mathbf{m}_{est} =  \mathbf{G^H} (\mathbf{G G^H})^{-1}\mathbf{d} \]` @size[26px](Sparse solution:) `\[ J = || \mathbf{m}||_1 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \]`
 @ulen
 
 +++?color=#ffffff
-@title[Basic 6]
+@title[Inverse problems 6]
 #### Inversion in practice
 
 @size[30px](Now that we know the analytical expressions, how do we find)
@@ -163,7 +146,7 @@ References:
 @ulen
 
 +++?color=#ffffff
-@title[Basic 7]
+@title[Inverse problems 7]
 #### Inversion in practice
 
 ![Costfunction](official/timisoara_summerschool_2019/assets/images/gradient_methods.png)
