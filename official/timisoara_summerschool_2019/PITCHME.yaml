@@ -2,21 +2,22 @@
 layout : top-left
 
 # Look-and-Feel
-theme : sky
-#theme : template
-#theme-background : [ "#FFF" ]
-#theme-headline   : [ "Roboto", "#5289F7", "none" ]
-#theme-byline     : [ "Roboto", "#111111", "none" ]
-#theme-text       : [ "Roboto", "#000000", "none" ]
-#theme-links      : [ "#5289F7", "#5254F7" ]
-#theme-code       : [ "Source Code Pro" ]
-#theme-controls   : [ "#484848" ]
-#theme-margins    : [ "10px", "15px" ]
-theme-override : official/timisoara_summerschool_2019/assets/css/PITCHME.css
-background-color : #ffffff;
+#theme : sky
+theme            : template
+
+theme-background : [ "black" ]
+theme-headline   : [ "Ubuntu", "orange", "none" ]
+theme-byline     : [ "Ubuntu", "white", "none" ]
+theme-text       : [ "Raleway", "white", "none" ]
+theme-links      : [ "#0295BB", "#C0C0C0" ]
+theme-code       : [ "Inconsolata" ]
+theme-controls   : [ "#484848" ]
+theme-margins    : [ "0", "15px" ]
+highlight : tomorrow
+
+#theme-override : official/timisoara_summerschool_2019/assets/css/PITCHME.css
 logo : official/timisoara_summerschool_2019/assets/images/logo.png
 logo-position : top-right
-highlight : white
 footnote : "Large scale inverse problems in geoscience"
 
 # Behavior

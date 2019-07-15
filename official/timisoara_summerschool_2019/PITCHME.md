@@ -2,7 +2,7 @@
 @title[Title]
 
 @snap[west span-95]
-## @css[blue](Large scale inverse problems in geoscience)
+## Large scale inverse problems in geoscience
 #### @css[black](Matteo Ravasi)
 ##### @css[black](Data Assimilation Summer School, Timisoara - 01/08/2019)
 
@@ -24,10 +24,10 @@ How do you implement **D** without an explicit matrix?
 @ul
 
 - Motivation: inverse problems in geoscience, how large?
-- Basics of inverse problems
-- Linear operators: philosophy and implementation (@gitlink[EX1](official/timisoara_summerschool_2019/quiz_solution.ipynb), @gitlink[EX2](official/timisoara_summerschool_2019/blurring.ipynb))
-- Least squares solvers (@gitlink[EX3](official/timisoara_summerschool_2019/blurring.ipynb))
-- Sparse solvers (@gitlink[EX4](official/timisoara_summerschool_2019/blurring.ipynb))
+- Basics of inverse problems (@gitlink[EX1](official/timisoara_summerschool_2019/Visual_optimization.ipynb))
+- Linear operators: philosophy and implementation (@gitlink[EX2](official/timisoara_summerschool_2019/Linear_Operators.ipynb))
+- Least squares solvers (@gitlink[EX3](official/timisoara_summerschool_2019/Solvers.ipynb))
+- Sparse solvers (@gitlink[EX4](official/timisoara_summerschool_2019/Solvers.ipynb))
 - Geophysical applications (@gitlink[EX5](developement/WaveEquationProcessing_new_and_comparison.ipynb), @gitlink[EX6](developement/SeismicInversion-Volve.ipynb))
 - Beyond single-machine inverse problems: GPUs, distributed...
 
@@ -157,7 +157,7 @@ References:
 
 <br>
 
-**G** is too large to be inverted (or solved directly)
+**G** is too large to be inverted (or solved explicitely)
 
 **G** is too large to be stored in memory
 <br><br>
@@ -174,8 +174,8 @@ the need to store an *explicit matrix*
 
 <br>
 
-@size[25px](Very powerful, sometimes underutilized concept
-BUT making sure forward and adjoint are adjoint to each other is not easy --> **DOT TEST**
+@size[25px](Very powerful, sometimes underutilized concept...
+but how do we make sure that forward and adjoint are correctly implemented? --> **DOT TEST**
 
 +++?color=#ffffff
 @title[Linear operators 2]
@@ -194,12 +194,27 @@ BUT making sure forward and adjoint are adjoint to each other is not easy --> **
             0     & 0 & ... & d_{N} \\
         \end{bmatrix} \]`
 
-@snap[south span-90]
+@snap[south span-60 text-08]
 @code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/diagonal.py)
 @snapend
 
 +++?color=#ffffff
 @title[Linear operators 3]
+#### Ex: Diagonal
+
+<br>
+
+**DOT TEST**: a correct implementation of forward and adjoint for
+a linear operator should verify the the following *equality*
+within a numerical tolerance:
+
+<br>
+
+`\[ (\mathbf{Op} \cdot  \mathbf{u})^H \mathbf{v} = \mathbf{u}^H (\mathbf{Op}^H \cdot \mathbf{v})
+\]`
+
++++?color=#ffffff
+@title[Linear operators 4]
 #### Ex: First derivative
 <br>
 `\[ \mathbf{D} = \begin{bmatrix}
@@ -207,10 +222,37 @@ BUT making sure forward and adjoint are adjoint to each other is not easy --> **
             -0.5     & 0 &  0.5 & ... & 0 \\
             ...                     \\
             0     & 0 & ... & -1 & 1 \\
-        \end{bmatrix},
-     \mathbf{D}^t = \begin{bmatrix}
-            -1 & -0.5     & ... &  0 &0 \\
+        \end{bmatrix}
+\]`
+
+@snap[south span-90 text-08]
+@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/firstderivative_forward.py)
+@snapend
+
+
++++?color=#ffffff
+@title[Linear operators 5]
+#### Ex: First derivative
+<br>
+`\[ \mathbf{D}^T = \begin{bmatrix}
+            -1 & -0.5     & ... &  0 & 0 \\
             1     & 0 &  0.5 & ... & 0 \\
             ...                     \\
             0     & 0 & ... & -0.5 & 1 \\
-        \end{bmatrix},\]`
+        \end{bmatrix}
+\]`
+
+@snap[south span-60 text-08]
+@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/firstderivative_adjoint.py)
+@snapend
+
+---?color=#ffffff
+@title[Solvers 1]
+## @css[blue](Solvers)
+
+@ul
+
+- **Least-squares**: normal equations, regularized, preconditioned
+- **L1**: sparsity promoting, blockiness promoting
+
+@ulend

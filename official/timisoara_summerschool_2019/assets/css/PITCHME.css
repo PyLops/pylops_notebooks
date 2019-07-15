@@ -38,9 +38,6 @@
   color: #e49436;
 }
 
-
-
-
 .title-top-right {
     position: fixed;
     top: 70px;
@@ -62,11 +59,6 @@
   letter-spacing: -0.03em !important;
   font-family: "Montserrat", Impact, sans-serif !important;
 }
-
-.reveal .slides {
-    color: #000000;
-}
-
 
 .reveal .slides section .code-presenting-annotation {
   color: white !important;
@@ -121,6 +113,3 @@ li {
 .centered-content img {
   width: 70%;
 }
-
-
-img[alt=fig1] { height: 400px; }

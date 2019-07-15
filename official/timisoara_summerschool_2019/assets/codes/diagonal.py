@@ -1,7 +1,7 @@
 # forward
 det _matvec(x)
-    return d*x
+    return self.diag * x
 
 # adjoint
 det _matvec(x)
-    return d*x
+    return self.diag * x
