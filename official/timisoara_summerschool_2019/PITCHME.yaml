@@ -5,10 +5,10 @@ layout : top-left
 #theme : sky
 theme            : template
 
-theme-background : [ "black" ]
+theme-background : [ "white" ]
 theme-headline   : [ "Ubuntu", "orange", "none" ]
-theme-byline     : [ "Ubuntu", "white", "none" ]
-theme-text       : [ "Raleway", "white", "none" ]
+theme-byline     : [ "Ubuntu", "black", "none" ]
+theme-text       : [ "Raleway", "black", "none" ]
 theme-links      : [ "#0295BB", "#C0C0C0" ]
 theme-code       : [ "Inconsolata" ]
 theme-controls   : [ "#484848" ]
