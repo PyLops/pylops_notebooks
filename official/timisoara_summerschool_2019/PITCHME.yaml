@@ -2,7 +2,7 @@
 layout : top-left
 
 # Look-and-Feel
-#theme : sky
+# theme : sky
 theme            : template
 
 theme-background : [ "white" ]
@@ -13,9 +13,9 @@ theme-links      : [ "#0295BB", "#C0C0C0" ]
 theme-code       : [ "Inconsolata" ]
 theme-controls   : [ "#484848" ]
 theme-margins    : [ "0", "15px" ]
-highlight : tomorrow
+highlight : lightfair
 
-#theme-override : official/timisoara_summerschool_2019/assets/css/PITCHME.css
+# theme-override : official/timisoara_summerschool_2019/assets/css/PITCHME.css
 logo : official/timisoara_summerschool_2019/assets/images/logo.png
 logo-position : top-right
 footnote : "Large scale inverse problems in geoscience"

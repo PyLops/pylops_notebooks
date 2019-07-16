@@ -1,12 +1,12 @@
----?color=#ffffff
+---
 @title[Title]
 
 @snap[west span-95]
-## Large scale inverse problems in geoscience
+## Large-scale inverse problems in geoscience
 #### @css[black](Matteo Ravasi)
 ##### @css[black](Data Assimilation Summer School, Timisoara - 01/08/2019)
 
----?color=#ffffff
+---
 @title[Quiz]
 ## @css[blue](Quiz)
 <br>
@@ -17,7 +17,7 @@ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||_2 + \lambda^2 ||\mathbf{D} \mathbf{m
 How do you implement **D** without an explicit matrix?
 
 
----?color=#ffffff
+---
 @title[Course outline]
 ## @css[blue](Course outline)
 
@@ -36,23 +36,23 @@ How do you implement **D** without an explicit matrix?
 
 ---?image=official/timisoara_summerschool_2019/assets/images/lifecycle.png&size=70% 70%&color=#ffffff
 
----?color=#ffffff
+---
 @title[Motivation]
 ## @css[blue](Large... how large?)
 <br>
 - Seismic processing
-`\[ n_S = n_R = 10^3, n_t = n_{fft} = 2 \cdot 10^3, \quad (dt = 4 ms, t_{max} = 8 s)
+`\[ n_S = n_R = 10^3, n_t = n_{fft} = 2 \cdot 10^3 \quad (dt = 4 ms, t_{max} = 8 s)
 \]`
 `\[ \rightarrow \mathbf{G}: n_S \cdot n_R \cdot n_{fft}^2 = 4 \cdot 10^{12} * 32 bit = 128 TB
 \]`
 <br>
 - Seismic inversion:
-`\[ n_x = n_y = 10^3, n_z = 800, \quad (dz = 5 m, t_{max} = 4000 m)
+`\[ n_x = n_y = 10^3, n_z = 800 \quad (dz = 5 m, t_{max} = 4000 m)
 \]`
 `\[ \rightarrow \mathbf{G}: n_x \cdot n_y \cdot n_z^2 = 6.4 \cdot 10^{11} * 32 bit \sim 20 TB
 \]`
 
----?color=#ffffff
+---
 @title[Inverse problems 1]
 ## @css[blue](Inverse problems)
 Fundamental theory developed in the '60/'70
@@ -66,7 +66,7 @@ Fundamental theory developed in the '60/'70
 
 @ulend
 
-+++?color=#ffffff
++++
 @title[Inverse problems 2]
 ## @css[blue](Inverse problems)
 References:
@@ -81,7 +81,7 @@ References:
 @size[30px](...)
 
 
-+++?color=#ffffff
++++
 @title[Inverse problems 3]
 
 #### Forward model
@@ -98,7 +98,7 @@ References:
 @ulend
 
 
-+++?color=#ffffff
++++
 @title[Inverse problems 4]
 
 #### Forward model
@@ -118,7 +118,7 @@ References:
 @size[30px](Nonunique and hard to *compute*, both expensive and unstable...)
 
 
-+++?color=#ffffff
++++
 @title[Inverse problems 5]
 
 @ul
@@ -128,7 +128,7 @@ References:
 - **underdetermined** (N &#60; M): @size[26px](not ideal, but sometimes only option - e.g., MRI scan. Least-squares solution:) `\[ J = || \mathbf{m}||_2 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \rightarrow \mathbf{m}_{est} =  \mathbf{G^H} (\mathbf{G G^H})^{-1}\mathbf{d} \]` @size[26px](Sparse solution:) `\[ J = || \mathbf{m}||_1 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \]`
 @ulen
 
-+++?color=#ffffff
++++
 @title[Inverse problems 6]
 #### Inversion in practice
 
@@ -145,13 +145,13 @@ References:
 - **iterative**: @size[26px](gradient based methods - CG, LSQR, GMRES...)
 @ulen
 
-+++?color=#ffffff
++++
 @title[Inverse problems 7]
 #### Inversion in practice
 
 ![Costfunction](official/timisoara_summerschool_2019/assets/images/gradient_methods.png)
 
-+++?color=#ffffff
++++
 @title[Inverse problems 8]
 #### Why iterative?
 
@@ -165,11 +165,11 @@ References:
 `\[ \mathbf{m}_{est} = \sum_{i=0}^{N_{iter}} f(\mathbf{G}, \mathbf{d}, \mathbf{m}_0) \qquad \mathbf{G} \mathbf{m}, \mathbf{G}^H \mathbf{d}, (\mathbf{m}^T \mathbf{m} , \mathbf{d}^T \mathbf{d})\]`
 
 
----?color=#ffffff
+---
 @title[Linear operators 1]
 ## @css[blue](Linear Operators)
-A piece of computer code  that can perform the *forward* and *adjoint* operations without
-the need to store an *explicit matrix*
+A piece of computer code that can perform *forward* and *adjoint* operations without
+the need to store an *explicit matrix*:
 `\[  \mathbf{G} \mathbf{m}, \mathbf{G}^H \mathbf{d} \]`
 
 <br>
@@ -177,7 +177,7 @@ the need to store an *explicit matrix*
 @size[25px](Very powerful, sometimes underutilized concept...
 but how do we make sure that forward and adjoint are correctly implemented? --> **DOT TEST**
 
-+++?color=#ffffff
++++
 @title[Linear operators 2]
 #### Ex: Diagonal
 <br>
@@ -196,9 +196,13 @@ but how do we make sure that forward and adjoint are correctly implemented? --> 
 
 @snap[south span-60 text-08]
 @code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/diagonal.py)
+@[1-3]
+@[4-7]
+<br>
 @snapend
 
-+++?color=#ffffff
+
++++
 @title[Linear operators 3]
 #### Ex: Diagonal
 
@@ -210,10 +214,10 @@ within a numerical tolerance:
 
 <br>
 
-`\[ (\mathbf{Op} \cdot  \mathbf{u})^H \mathbf{v} = \mathbf{u}^H (\mathbf{Op}^H \cdot \mathbf{v})
+`\[ (\mathbf{G} \cdot  \mathbf{u})^H \mathbf{v} = \mathbf{u}^H (\mathbf{G}^H \cdot \mathbf{v})
 \]`
 
-+++?color=#ffffff
++++
 @title[Linear operators 4]
 #### Ex: First derivative
 <br>
@@ -225,12 +229,13 @@ within a numerical tolerance:
         \end{bmatrix}
 \]`
 
-@snap[south span-90 text-08]
+@snap[south span-73 text-08]
 @code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/firstderivative_forward.py)
+<br>
 @snapend
 
 
-+++?color=#ffffff
++++
 @title[Linear operators 5]
 #### Ex: First derivative
 <br>
@@ -244,15 +249,77 @@ within a numerical tolerance:
 
 @snap[south span-60 text-08]
 @code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/firstderivative_adjoint.py)
+<br>
 @snapend
 
----?color=#ffffff
+---
 @title[Solvers 1]
 ## @css[blue](Solvers)
 
+<br>
+
 @ul
 
-- **Least-squares**: normal equations, regularized, preconditioned
+- **Least-squares**: regularized, preconditioned
 - **L1**: sparsity promoting, blockiness promoting
 
 @ulend
+
++++
+@title[Solvers 2]
+#### Least-squares - Regularized inversion
+Add information to the inverse problem --> mitigate *ill-posedness*
+
+<br>
+`\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2_{\mathbf{W}_d} + \sum_i{\epsilon_{R_i}^2 ||\mathbf{d}_{R_i} - \mathbf{R}_i \mathbf{m}||^2_{\mathbf{W}_{R_i}}}
+\]`
+<br>
+`\[
+\begin{bmatrix}
+            \mathbf{W}^{1/2}_d \mathbf{G}    \\
+            \epsilon_{R_1} \mathbf{W}^{1/2}_{R_1} \mathbf{R}_1 \\
+            ...   \\
+            \epsilon_{R_N} \mathbf{W}^{1/2}_{R_N} \mathbf{R}_N
+        \end{bmatrix} \mathbf{m} =
+        \begin{bmatrix}
+            \mathbf{W}^{1/2}_d \mathbf{d}    \\
+            \epsilon_{R_1} \mathbf{W}^{1/2}_{R_1} \mathbf{d}_{R_1} \\
+            ...   \\
+            \epsilon_{R_N} \mathbf{W}^{1/2}_{R_N} \mathbf{d}_{R_N}
+        \end{bmatrix}
+\]`
+
+
++++
+@title[Solvers 2]
+#### Least-squares - Bayesian inversion
+Add prior information to the inverse problem --> mitigate *ill-posedness*
+
+<br>
+`\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2_{\mathbf{C}_d^{-1}} + ||\mathbf{m}_{0} - \mathbf{m}||^2_{\mathbf{C}_m^{-1}}
+\]`
+<br>
+`\[
+\begin{bmatrix}
+            \mathbf{C}^{-1/2}_d \mathbf{G}    \\
+            \mathbf{C}^{-1/2}_{m} \\
+        \end{bmatrix} \mathbf{m} =
+        \begin{bmatrix}
+            \mathbf{C}^{-1/2}_d \mathbf{d}    \\
+            \mathbf{C}^{-1/2}_{m} \mathbf{m}_0
+        \end{bmatrix}
+\]`
+
+
++++
+@title[Solvers 2]
+#### Least-squares - Preconditioned inversion
+Limit the range of plausible models --> mitigate *ill-posedness*
+
+<br>
+`\[ J = || \mathbf{d} - \mathbf{G} \mathbf{P} \mathbf{p}||^2
+\]`
+<br>
+`\[
+\mathbf{m} = \mathbf{P} \mathbf{p}
+\]`
