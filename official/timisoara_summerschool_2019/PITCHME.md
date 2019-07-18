@@ -28,7 +28,7 @@ How do you implement **D** without an explicit matrix?
 - Linear operators: philosophy and implementation (@gitlink[EX2](official/timisoara_summerschool_2019/Linear_Operators.ipynb))
 - Least squares solvers (@gitlink[EX3](official/timisoara_summerschool_2019/Solvers.ipynb))
 - Sparse solvers (@gitlink[EX4](official/timisoara_summerschool_2019/Solvers.ipynb))
-- Geophysical applications (@gitlink[EX5](developement/WaveEquationProcessing_new_and_comparison.ipynb), @gitlink[EX6](developement/SeismicInversion-Volve.ipynb))
+- Geophysical applications (@gitlink[EX5](official/timisoara_summerschool_2019/SeismicRedatuming.ipynb), @gitlink[EX6](developement/SeismicInversion-Volve.ipynb))
 - Beyond single-machine inverse problems: GPUs, distributed...
 
 @ulend
@@ -149,7 +149,7 @@ References:
 @title[Inverse problems 7]
 #### Inversion in practice
 
-![Costfunction](official/timisoara_summerschool_2019/assets/images/gradient_methods.png)
+![Gradient_methods](official/timisoara_summerschool_2019/assets/images/gradient_methods.png)
 
 +++
 @title[Inverse problems 8]
@@ -252,18 +252,21 @@ within a numerical tolerance:
 <br>
 @snapend
 
+
 ---
 @title[Solvers 1]
 ## @css[blue](Solvers)
 
 <br>
-
 @ul
-
 - **Least-squares**: regularized, preconditioned
 - **L1**: sparsity promoting, blockiness promoting
+@ulen
 
-@ulend
+@snap[south span-60 text-08]
+![Cost_functions](official/timisoara_summerschool_2019/assets/images/cost_functions.png)
+@snapend
+
 
 +++
 @title[Solvers 2]
@@ -381,3 +384,74 @@ Limit the range of plausible models --> mitigate *ill-posedness*
 <br>
 @snapend
 
++++
+@title[Solvers 8]
+#### Sparsity
+Introduce L1 norms to cost function
+
+<br>
+@ul
+- **Data misfit term**: outliers
+- **Model**: sparse model
+- **Projected Model**: e.g. blocky model (projection = first derivative)
+@ulen
+<br>
+
+---
+@title[Geophysical applications - MDC 1]
+#### Seismic redatuming
+
+@snap[midpoint span-80]
+![MDC](official/timisoara_summerschool_2019/assets/images/mdc.png)
+@snapend
+
++++
+@title[Geophysical applications - MDC 2]
+#### Seismic redatuming
+
+Integral relation:
+`\[
+g^-(t, x_s, x_v) = \mathscr{F}^{-1} \Big( \int_S g^+(f, x_s, x_r)
+        \mathscr{F}(R(t, x_r, x_v)) dr \Big)
+\]`
+
+<br>
+Discretized relation:
+`\[
+\mathbf{G^-}= \mathbf{\hat{G}^+} \mathbf{R}
+\]`
+
+where:
+`\[
+\mathbf{\hat{G}^+}= \mathbf{F}^H  \mathbf{G^+} \mathbf{F}
+\]`
+<br><br>
+Let's practice @gitlink[EX5](official/timisoara_summerschool_2019/SeismicRedatuming.ipynb).
+
+
+---
+@title[Geophysical applications - Seismic inversion 1]
+#### Seismic inversion
+
+@snap[midpoint span-80]
+![SeismicInversion](official/timisoara_summerschool_2019/assets/images/seismic_inversion.png)
+@snapend
+
++++
+@title[Geophysical applications - Seismic inversion 1]
+#### Seismic inversion
+
+Integral relation:
+`\[
+d(t) =  w(t) * \frac{d(ln(AI(t))}{dt}
+\]`
+
+<br>
+Discretized relation:
+`\[
+\mathbf{d}=  \mathbf{W} \mathbf{D} \mathbf{ai}
+\]`
+
+where **D** is a derivative operator and **W** is a convolution operator.
+<br><br>
+Let's practice @gitlink[EX6](developement/SeismicInversion-Volve.ipynb).
