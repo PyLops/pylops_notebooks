@@ -291,7 +291,19 @@ Add information to the inverse problem --> mitigate *ill-posedness*
 
 
 +++
-@title[Solvers 2]
+@title[Solvers 3]
+#### Least-squares - Regularized inversion
+Add information to the inverse problem --> mitigate *ill-posedness*
+
+@snap[midpoint span-73 text-08]
+<br><br>
+@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/regularized.py)
+<br>
+@snapend
+
+
++++
+@title[Solvers 4]
 #### Least-squares - Bayesian inversion
 Add prior information to the inverse problem --> mitigate *ill-posedness*
 
@@ -307,12 +319,45 @@ Add prior information to the inverse problem --> mitigate *ill-posedness*
         \begin{bmatrix}
             \mathbf{C}^{-1/2}_d \mathbf{d}    \\
             \mathbf{C}^{-1/2}_{m} \mathbf{m}_0
-        \end{bmatrix}
+        \end{bmatrix} \rightarrow
+\]`
+
+`\[
+\mathbf{m} = (\mathbf{G}^T \mathbf{C}^{-1}_d \mathbf{G} + \mathbf{C}^{-1}_m)^{-1}
+(\mathbf{G}^T \mathbf{C}^{-1}_d \mathbf{d} + \mathbf{C}^{-1}_m \mathbf{m_0})
 \]`
 
 
 +++
-@title[Solvers 2]
+@title[Solvers 5]
+#### Least-squares - Bayesian inversion
+Add prior information to the inverse problem --> mitigate *ill-posedness*
+
+<br>
+`\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2_{\mathbf{C}_d^{-1}} + ||\mathbf{m}_{0} - \mathbf{m}||^2_{\mathbf{C}_m^{-1}}
+\]`
+<br>
+
+`\[
+\mathbf{m} = \mathbf{m_0} + \mathbf{C}_m \mathbf{R}^T (\mathbf{R} \mathbf{C}_m \mathbf{R}^T +
+\mathbf{C}_d)^{-1} (\mathbf{d} - \mathbf{R} \mathbf{m_0})
+\]`
+
+
++++
+@title[Solvers 6]
+#### Least-squares - Bayesian inversion
+Add prior information to the inverse problem --> mitigate *ill-posedness*
+
+@snap[midpoint span-65 text-08]
+<br><br>
+@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/bayesian.py)
+<br>
+@snapend
+
+
++++
+@title[Solvers 7]
 #### Least-squares - Preconditioned inversion
 Limit the range of plausible models --> mitigate *ill-posedness*
 
@@ -323,3 +368,16 @@ Limit the range of plausible models --> mitigate *ill-posedness*
 `\[
 \mathbf{m} = \mathbf{P} \mathbf{p}
 \]`
+
+
++++
+@title[Solvers 8]
+#### Least-squares - Preconditioned inversion
+Limit the range of plausible models --> mitigate *ill-posedness*
+
+@snap[midpoint span-65 text-08]
+<br><br>
+@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/preconditioned.py)
+<br>
+@snapend
+
