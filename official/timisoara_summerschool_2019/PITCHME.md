@@ -11,9 +11,9 @@
 ## @css[blue](Quiz)
 <br>
 `\[
-J = || \mathbf{d} - \mathbf{G} \mathbf{m}||_2 + \lambda^2 ||\mathbf{D} \mathbf{m}||_2
+J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{D} \mathbf{m}||^2
 \]`
-
+<br>
 How do you implement **D** without an explicit matrix?
 
 
@@ -35,12 +35,14 @@ How do you implement **D** without an explicit matrix?
 
 
 ---?image=official/timisoara_summerschool_2019/assets/images/lifecycle.png&size=70% 70%&color=#ffffff
++++?image=official/timisoara_summerschool_2019/assets/images/lifecycle_highlighted.png&size=70% 70%&color=#ffffff
+
 
 ---
 @title[Motivation]
 ## @css[blue](Large... how large?)
 <br>
-- Seismic processing
+- Seismic processing:
 `\[ n_S = n_R = 10^3, n_t = n_{fft} = 2 \cdot 10^3 \quad (dt = 4 ms, t_{max} = 8 s)
 \]`
 `\[ \rightarrow \mathbf{G}: n_S \cdot n_R \cdot n_{fft}^2 = 4 \cdot 10^{12} * 32 bit = 128 TB
@@ -91,9 +93,9 @@ References:
 
 @ul
 
-- **d**: observed data. @size[30px](Quantity that we can physicially measure) @size[25px]((seismic, production, temperature, precipitation, MRI scan...))
-- **m**: model. @size[30px](Quantity that we are interested to know and we think affects the data) @size[25px]((rock properties, pressure, saturation, human organs...)
-- **G**: modelling operator. @size[30px](Set of equations that we think can explain the data by *nonlinear/linear combination* of model parameters) @size[25px]((PDEs, seismic convolution model, camera blurring...))
+- **d**: observed data. @size[30px](Quantity that we can physicially measure - ) @size[25px](seismic, production, temperature, precipitation, MRI scan...)
+- **m**: model. @size[30px](Quantity that we are interested to know and we think affects the data - ) @size[25px](rock properties, pressure, saturation, human organs...)
+- **G**: modelling operator. @size[30px](Set of equations that we think can explain the data by *nonlinear/linear combination* of model parameters - ) @size[25px](PDEs, seismic convolution model, camera blurring...)
 
 @ulend
 
@@ -150,6 +152,7 @@ References:
 #### Inversion in practice
 
 ![Gradient_methods](official/timisoara_summerschool_2019/assets/images/gradient_methods.png)
+Let's practice @gitlink[EX1](official/timisoara_summerschool_2019/Visual_optimization.ipynb).
 
 +++
 @title[Inverse problems 8]
@@ -187,7 +190,7 @@ but how do we make sure that forward and adjoint are correctly implemented? --> 
             ...                     \\
             0     & 0 & ... & d_{N} \\
         \end{bmatrix},
-        \mathbf{D}^T = \begin{bmatrix}
+        \mathbf{D}^H = \begin{bmatrix}
             d_{1} & 0     & ... & 0 \\
             0     & d_{2} & ... & 0 \\
             ...                     \\
@@ -239,7 +242,7 @@ within a numerical tolerance:
 @title[Linear operators 5]
 #### Ex: First derivative
 <br>
-`\[ \mathbf{D}^T = \begin{bmatrix}
+`\[ \mathbf{D}^H = \begin{bmatrix}
             -1 & -0.5     & ... &  0 & 0 \\
             1     & 0 &  0.5 & ... & 0 \\
             ...                     \\
@@ -252,6 +255,13 @@ within a numerical tolerance:
 <br>
 @snapend
 
++++
+@title[Linear operators 6]
+#### Ex: First derivative
+<br>
+<br>
+Let's practice @gitlink[EX2](official/timisoara_summerschool_2019/Linear_Operators.ipynb).
+
 
 ---
 @title[Solvers 1]
@@ -259,7 +269,7 @@ within a numerical tolerance:
 
 <br>
 @ul
-- **Least-squares**: regularized, preconditioned
+- **Least-squares**: regularized, preconditioned, bayesian
 - **L1**: sparsity promoting, blockiness promoting
 @ulen
 
@@ -425,7 +435,7 @@ where:
 `\[
 \mathbf{\hat{G}^+}= \mathbf{F}^H  \mathbf{G^+} \mathbf{F}
 \]`
-<br><br>
+<br>
 Let's practice @gitlink[EX5](official/timisoara_summerschool_2019/SeismicRedatuming.ipynb).
 
 
