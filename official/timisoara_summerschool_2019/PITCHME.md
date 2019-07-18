@@ -35,7 +35,7 @@ How do you implement **D** without an explicit matrix?
 
 
 ---?image=official/timisoara_summerschool_2019/assets/images/lifecycle.png&size=70% 70%&color=#ffffff
-+++?image=official/timisoara_summerschool_2019/assets/images/lifecycle_highlighted.png&size=70% 70%&color=#ffffff
++++?image=official/timisoara_summerschool_2019/assets/images/lifecycle_highlight.png&size=70% 70%&color=#ffffff
 
 
 ---
