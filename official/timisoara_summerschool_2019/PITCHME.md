@@ -407,6 +407,8 @@ Introduce L1 norms to cost function
 @ulen
 <br>
 
+Let's practice @gitlink[EX1](official/timisoara_summerschool_2019/Solvers.ipynb).
+
 ---
 @title[Geophysical applications - MDC 1]
 #### Seismic redatuming
