@@ -16,3 +16,4 @@ dependencies:
   - icc_rt
   - pip:
     - segyio
+    - scooby

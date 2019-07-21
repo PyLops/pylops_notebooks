@@ -126,7 +126,7 @@ References:
 
 @ul
 
-- **square** (N = M): @size[26px](rarely the case in real life. Solution:) `\[ \mathbf{G}^{-1} \rightarrow \mathbf{m}_{est} = \mathbf{G}^{-1} \mathbf{d}  \]`
+- **square** (N = M): @size[26px](rarely the case in real life. Solution:) `\[ \mathbf{G}^{-1} \rightarrow \mathbf{m}_{est} = \mathbf{G}^{-1} \mathbf{d}  \]` <br>
 - **overdetermined** (N &#62; M): @size[26px](most common case, robust to noise as more data points than model parameters. Least-squares solution:) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||_2 \rightarrow \mathbf{m}_{est} = (\mathbf{G^H G})^{-1} \mathbf{G^H} \mathbf{d} \]`
 - **underdetermined** (N &#60; M): @size[26px](not ideal, but sometimes only option - e.g., MRI scan. Least-squares solution:) `\[ J = || \mathbf{m}||_2 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \rightarrow \mathbf{m}_{est} =  \mathbf{G^H} (\mathbf{G G^H})^{-1}\mathbf{d} \]` @size[26px](Sparse solution:) `\[ J = || \mathbf{m}||_1 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \]`
 @ulen
@@ -198,20 +198,18 @@ but how do we make sure that forward and adjoint are correctly implemented? --> 
             0     & 0 & ... & d_{N} \\
         \end{bmatrix} \]`
 
-@snap[south span-85 text-09]
+@snap[south span-50 text-09]
 <pre><code># forward
-    def _matvec(x)
-        return self.diag * x
-
-    # adjoint
-    def _matvec(x)
-        return self.diag * x
+def _matvec(x)
+    return self.diag &#42; x
+&#35; adjoint
+def _matvec(x)
+    return self.diag &#42; x
 </code></pre>
 @[1-3]
 @[4-7]
-@snapend
-
 <br><br>
+@snapend
 
 
 +++
@@ -234,21 +232,22 @@ within a numerical tolerance:
 #### Ex: First derivative
 <br>
 `\[ \mathbf{D} = \begin{bmatrix}
-            -1 & 1     & ... &  0 &0 \\
-            -0.5     & 0 &  0.5 & ... & 0 \\
-            ...                     \\
-            0     & 0 & ... & -1 & 1 \\
+            -1      & 1  & ... & 0   & 0 \\
+            -0.5    & 0  & 0.5 & ... & 0 \\
+            ...                           \\
+            0       & 0  & ... & -1  & 1 \\
         \end{bmatrix}
 \]`
 
 @snap[south span-73 text-08]
 <pre><code>def _matvec(x):
-    x, y = x.squeeze(), np.zeros(self.N, self.dtype)
-    y[1:-1] = (0.5 * x[2:] - 0.5 * x[0:-2]) / self.sampling
-    # edges
-    y[0] = (x[1] - x[0]) / self.sampling
-    y[-1] = (x[-1] - x[-2]) / self.sampling
+x, y = x.squeeze(), np.zeros(self.N, self.dtype)
+y[1:-1] = (0.5 &#42; x[2:] - 0.5 &#42; x[0:-2]) / self.sampling
+&#35; edges
+y[0] = (x[1] - x[0]) / self.sampling
+y[-1] = (x[-1] - x[-2]) / self.sampling
 </code></pre>
+<br><br>
 @snapend
 
 
@@ -257,30 +256,31 @@ within a numerical tolerance:
 #### Ex: First derivative
 <br>
 `\[ \mathbf{D}^H = \begin{bmatrix}
-            -1 & -0.5     & ... &  0 & 0 \\
-            1     & 0 &  0.5 & ... & 0 \\
-            ...                     \\
-            0     & 0 & ... & -0.5 & 1 \\
+            -1    & -0.5  & ...   & 0    & 0 \\
+            1     & 0     &  -0.5 & ...  & 0 \\
+            ...                             \\
+            0     & 0     & ...   & -0.5 & 1 \\
         \end{bmatrix}
 \]`
 
-@snap[south span-80 text-08]
+@snap[south span-73 text-08]
 <pre><code>def _rmatvec(x):
-    x, y = x.squeeze(), np.zeros(self.N, self.dtype)
-    y[0:-2] -= (0.5 * x[1:-1]) / self.sampling
-    y[2:] += (0.5 * x[1:-1]) / self.sampling
-    # edges
-    y[0] -= x[0] / self.sampling
-    y[1] += x[0] / self.sampling
-    y[-2] -= x[-1] / self.sampling
-    y[-1] += x[-1] / self.sampling
+x, y = x.squeeze(), np.zeros(self.N, self.dtype)
+y[0:-2] -= (0.5 &#42; x[1:-1]) / self.sampling
+y[2:] += (0.5 &#42; x[1:-1]) / self.sampling
+&#35; edges
+y[0] -= x[0] / self.sampling
+y[1] += x[0] / self.sampling
+y[-2] -= x[-1] / self.sampling
+y[-1] += x[-1] / self.sampling
 </code></pre>
+<br>
 @snapend
 
 
 +++
 @title[Linear operators 6]
-<br><br>
+<br><br><br><br>
 Let's practice @gitlink[EX2](official/timisoara_summerschool_2019/Linear_Operators.ipynb).
 <br>
 
@@ -329,18 +329,17 @@ Add information to the inverse problem --> mitigate *ill-posedness*
 #### Least-squares - Regularized inversion
 Add information to the inverse problem --> mitigate *ill-posedness*
 
-@snap[midpoint span-73 text-08]
-<pre><code>def RegularizedInversion(G, Reg, d, dreg, epsR, ...):
-    ...
-    # operator
-    Gtot = VStack([G, epsR * Reg], dtype=G.dtype)
-    #data
-    dtot = np.hstack((d, epsR*dreg))
-    ...
-    # solver
-    minv = lsqr(Gtot, dtot, ...)[0]
-
+@snap[midpoint span-70 text-10]
+<br><br>
+<pre><code>def RegularizedInversion(G, Reg, d, dreg, epsR):
+&#35; operator
+Gtot = VStack([G, epsR &#42; Reg])
+&#35; data
+dtot = np.hstack((d, epsR*dreg))
+&#35; solver
+minv = lsqr(Gtot, dtot)[0]
 </code></pre>
+<br>
 @snapend
 
 
@@ -391,19 +390,18 @@ Add prior information to the inverse problem --> mitigate *ill-posedness*
 #### Least-squares - Bayesian inversion
 Add prior information to the inverse problem --> mitigate *ill-posedness*
 
-@snap[midpoint span-65 text-08]
-<pre><code>def BayesianInversion(G, d, Cm, Cd ...):
-    ...
-    # operator
-    Gbayes = G * Cm * G.H + Cd
-    # data
-    dbayes = d - G * m0
-    ...
-    # solver
-    minv = m0 + Cm * G.H * lsqr(Gbayes, dbayes, ...)[0]
+@snap[midpoint span-70 text-10]
+<br><br>
+<pre><code>def BayesianInversion(G, d, Cm, Cd):
+&#35; operator
+Gbayes = G * Cm &#42; G.H + Cd
+&#35; data
+dbayes = d - G &#42; m0
+&#35; solver
+minv = m0 + Cm &#42; G.H &#42; lsqr(Gbayes, dbayes)[0]
 </code></pre>
-@snapend
 <br>
+@snapend
 
 
 +++
@@ -425,17 +423,17 @@ Limit the range of plausible models --> mitigate *ill-posedness*
 #### Least-squares - Preconditioned inversion
 Limit the range of plausible models --> mitigate *ill-posedness*
 
-@snap[midpoint span-65 text-08]
-<pre><code>def PreconditionedInversion(G, P, d, ...):
-    ...
-    # operator
-    Gtot = G * P
-    ...
-    # solver
-    minv = lsqr(Gtot, d, ...)[0]
+@snap[midpoint span-70 text-10]
+<br><br>
+<pre><code>def PreconditionedInversion(G, P, d):
+&#35; operator
+Gtot = G &#42; P
+&#35; solver
+minv = lsqr(Gtot, d)[0]
 </code></pre>
+<br><br>
 @snapend
-<br>
+
 
 +++
 @title[Solvers 8]
@@ -452,7 +450,7 @@ Introduce L1 norms to cost function
 
 +++
 @title[Solvers 9]
-<br><br>
+<br><br><br><br>
 Let's practice @gitlink[EX3-EX4](official/timisoara_summerschool_2019/Solvers.ipynb).
 <br>
 
