@@ -35,8 +35,9 @@ How do you implement **D** without an explicit matrix?
 
 
 ---?image=official/timisoara_summerschool_2019/assets/images/lifecycle.png&size=70% 70%&color=#ffffff
+@title[Lifecycle]
 +++?image=official/timisoara_summerschool_2019/assets/images/lifecycle_highlight.png&size=70% 70%&color=#ffffff
-
+@title[Lifecycle]
 
 ---
 @title[Motivation]
@@ -178,7 +179,7 @@ the need to store an *explicit matrix*:
 <br>
 
 @size[25px](Very powerful, sometimes underutilized concept...
-but how do we make sure that forward and adjoint are correctly implemented? --> **DOT TEST**
+but how do we make sure that forward and adjoint are correctly implemented? --> **Dot-Test**
 
 +++
 @title[Linear operators 2]
@@ -197,12 +198,20 @@ but how do we make sure that forward and adjoint are correctly implemented? --> 
             0     & 0 & ... & d_{N} \\
         \end{bmatrix} \]`
 
-@snap[south span-60 text-08]
-@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/diagonal.py)
+@snap[south span-85 text-09]
+<pre><code># forward
+    def _matvec(x)
+        return self.diag * x
+
+    # adjoint
+    def _matvec(x)
+        return self.diag * x
+</code></pre>
 @[1-3]
 @[4-7]
-<br>
 @snapend
+
+<br><br>
 
 
 +++
@@ -211,7 +220,7 @@ but how do we make sure that forward and adjoint are correctly implemented? --> 
 
 <br>
 
-**DOT TEST**: a correct implementation of forward and adjoint for
+**Dot-Test**: a correct implementation of forward and adjoint for
 a linear operator should verify the the following *equality*
 within a numerical tolerance:
 
@@ -233,8 +242,13 @@ within a numerical tolerance:
 \]`
 
 @snap[south span-73 text-08]
-@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/firstderivative_forward.py)
-<br>
+<pre><code>def _matvec(x):
+    x, y = x.squeeze(), np.zeros(self.N, self.dtype)
+    y[1:-1] = (0.5 * x[2:] - 0.5 * x[0:-2]) / self.sampling
+    # edges
+    y[0] = (x[1] - x[0]) / self.sampling
+    y[-1] = (x[-1] - x[-2]) / self.sampling
+</code></pre>
 @snapend
 
 
@@ -250,18 +264,25 @@ within a numerical tolerance:
         \end{bmatrix}
 \]`
 
-@snap[south span-60 text-08]
-@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/firstderivative_adjoint.py)
-<br>
+@snap[south span-80 text-08]
+<pre><code>def _rmatvec(x):
+    x, y = x.squeeze(), np.zeros(self.N, self.dtype)
+    y[0:-2] -= (0.5 * x[1:-1]) / self.sampling
+    y[2:] += (0.5 * x[1:-1]) / self.sampling
+    # edges
+    y[0] -= x[0] / self.sampling
+    y[1] += x[0] / self.sampling
+    y[-2] -= x[-1] / self.sampling
+    y[-1] += x[-1] / self.sampling
+</code></pre>
 @snapend
+
 
 +++
 @title[Linear operators 6]
-#### Ex: First derivative
-<br>
-<br>
+<br><br>
 Let's practice @gitlink[EX2](official/timisoara_summerschool_2019/Linear_Operators.ipynb).
-
+<br>
 
 ---
 @title[Solvers 1]
@@ -286,7 +307,7 @@ Add information to the inverse problem --> mitigate *ill-posedness*
 <br>
 `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2_{\mathbf{W}_d} + \sum_i{\epsilon_{R_i}^2 ||\mathbf{d}_{R_i} - \mathbf{R}_i \mathbf{m}||^2_{\mathbf{W}_{R_i}}}
 \]`
-<br>
+
 `\[
 \begin{bmatrix}
             \mathbf{W}^{1/2}_d \mathbf{G}    \\
@@ -309,9 +330,17 @@ Add information to the inverse problem --> mitigate *ill-posedness*
 Add information to the inverse problem --> mitigate *ill-posedness*
 
 @snap[midpoint span-73 text-08]
-<br><br>
-@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/regularized.py)
-<br>
+<pre><code>def RegularizedInversion(G, Reg, d, dreg, epsR, ...):
+    ...
+    # operator
+    Gtot = VStack([G, epsR * Reg], dtype=G.dtype)
+    #data
+    dtot = np.hstack((d, epsR*dreg))
+    ...
+    # solver
+    minv = lsqr(Gtot, dtot, ...)[0]
+
+</code></pre>
 @snapend
 
 
@@ -363,10 +392,18 @@ Add prior information to the inverse problem --> mitigate *ill-posedness*
 Add prior information to the inverse problem --> mitigate *ill-posedness*
 
 @snap[midpoint span-65 text-08]
-<br><br>
-@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/bayesian.py)
-<br>
+<pre><code>def BayesianInversion(G, d, Cm, Cd ...):
+    ...
+    # operator
+    Gbayes = G * Cm * G.H + Cd
+    # data
+    dbayes = d - G * m0
+    ...
+    # solver
+    minv = m0 + Cm * G.H * lsqr(Gbayes, dbayes, ...)[0]
+</code></pre>
 @snapend
+<br>
 
 
 +++
@@ -389,10 +426,16 @@ Limit the range of plausible models --> mitigate *ill-posedness*
 Limit the range of plausible models --> mitigate *ill-posedness*
 
 @snap[midpoint span-65 text-08]
-<br><br>
-@code[python zoom-13 code-max code-shadow](official/timisoara_summerschool_2019/assets/codes/preconditioned.py)
-<br>
+<pre><code>def PreconditionedInversion(G, P, d, ...):
+    ...
+    # operator
+    Gtot = G * P
+    ...
+    # solver
+    minv = lsqr(Gtot, d, ...)[0]
+</code></pre>
 @snapend
+<br>
 
 +++
 @title[Solvers 8]
@@ -401,13 +444,18 @@ Introduce L1 norms to cost function
 
 <br>
 @ul
-- **Data misfit term**: outliers
-- **Model**: sparse model
-- **Projected Model**: e.g. blocky model (projection = first derivative)
+- **Data misfit term**: outliers `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}|| \]`
+- **Model**: sparse model `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{m}|| \]`
+- **Projected Model**: e.g. blocky model (projection = first derivative) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{D} \mathbf{m}|| \]`
 @ulen
 <br>
 
-Let's practice @gitlink[EX1](official/timisoara_summerschool_2019/Solvers.ipynb).
++++
+@title[Solvers 9]
+<br><br>
+Let's practice @gitlink[EX3-EX4](official/timisoara_summerschool_2019/Solvers.ipynb).
+<br>
+
 
 ---
 @title[Geophysical applications - MDC 1]

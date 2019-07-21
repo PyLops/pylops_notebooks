@@ -1,4 +1,4 @@
-det _rmatvec(x):
+def _rmatvec(x):
     x, y = x.squeeze(), np.zeros(self.N, self.dtype)
     y[0:-2] -= (0.5 * x[1:-1]) / self.sampling
     y[2:] += (0.5 * x[1:-1]) / self.sampling

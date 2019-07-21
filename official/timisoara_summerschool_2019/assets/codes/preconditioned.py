@@ -1,5 +1,4 @@
 def PreconditionedInversion(G, P, d, ...):
-
     ...
     # operator
     Gtot = G * P

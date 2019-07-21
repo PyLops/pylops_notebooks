@@ -1,5 +1,4 @@
 def BayesianInversion(G, d, Cm, Cd ...):
-
     ...
     # operator
     Gbayes = G * Cm * G.H + Cd
