@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 .DS_Store
 .idea
+*~
 
 # Jupyter Notebook
 notready
@@ -11,11 +12,14 @@ notready
 
 # Parallel stuff
 dask-worker-space
+developement-distributed/hostfile.txt
 
 # Big data
 data/seismicinversion/*segy
 data/marchenko/3D*
+data/marchenko/*zarr
 
 # Slides data assimilations summer school
 official/timisoara_summerschool_2019/figures.pptx
 official/timisoara_summerschool_2019/runlocal.sh
+
