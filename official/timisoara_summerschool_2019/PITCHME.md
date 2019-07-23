@@ -14,7 +14,7 @@
 J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{D} \mathbf{m}||^2
 \]`
 <br>
-How do you implement **D** without an explicit matrix?
+How do you minimize this cost function *without* creating explicit matrices?
 
 
 ---
@@ -50,7 +50,7 @@ How do you implement **D** without an explicit matrix?
 \]`
 <br>
 - Seismic inversion:
-`\[ n_x = n_y = 10^3, n_z = 800 \quad (dz = 5 m, t_{max} = 4000 m)
+`\[ n_x = n_y = 10^3, n_z = 800 \quad (dz = 5 m, z_{max} = 4000 m)
 \]`
 `\[ \rightarrow \mathbf{G}: n_x \cdot n_y \cdot n_z^2 = 6.4 \cdot 10^{11} * 32 bit \sim 20 TB
 \]`
@@ -513,3 +513,48 @@ Discretized relation:
 where **D** is a derivative operator and **W** is a convolution operator.
 <br><br>
 Let's practice @gitlink[EX6](developement/SeismicInversion-Volve.ipynb).
+
+---
+@title[Implementation - PyLops]
+#### Some words about implementation...
+
+@ul
+
+- Solving large-scale inverse problems can be daunting --> *Divide and conquer* paradigm
+- Focus on fast operators as well as on advanced solvers
+- Various paradigms (deterministic, bayesian..) can share same frameworks
+
+@ulen
+
+@snap[south span-80]
+![PyLops](official/timisoara_summerschool_2019/assets/images/pylops.png)
+@snapend
+
+---
+@title[Implementation - GPUs]
+#### Beyond laptop usage - GPUs
+
+@ul
+- Computational cost of PyLops: forward and adjoint passes (dot products...)
+- Several operators are convolution filters in disguise --> leverage ML libraries
+- @gitlink[Seismic inversion example](development-cuda/SeismicInversion.ipynb): **d** = **W** **D** **m**, **W**: convolution with w, **D**: derivative = convolution with [-1, 1]
+@ulen
+
+@ul
+- *TensorFlow*, **PyTorch**, Cupy, PyCuda...
+@ulen
+
+---
+@title[Implementation - Distributed]
+#### Beyond laptop usage - Distributed computing
+
+@ul
+- Data and model can outreach RAM size --> distribute
+- Several operators can be easily parallelized
+- Solvers can be partially parallelized
+- MDC example: *G+* and *G-* can reach 100++ GB for 3D seismic acquisition, **G+** is a batched matrix-matrix multiplication
+@ulen
+
+@ul
+- Joblib, mpi4py, *Dask*...
+@ulen
