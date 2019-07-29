@@ -18,6 +18,18 @@ How do you minimize this cost function *without* creating explicit matrices?
 
 
 ---
+@title[Goals]
+## @css[blue](Goals)
+<br>
+@ul
+
+- Basic of linear algebra (hopefully already...)
+- From textbook linear algebra to real-life linear algebra
+- Linear algebra in software: **PyLops** <br><br>
+- Python is **Slow** if you write is as C, it is not if you leverage its advanced libraries (numpy, scipy, tensorflow, pytorch, pycuda, dask...)
+@ulend
+
+---
 @title[Course outline]
 ## @css[blue](Course outline)
 
@@ -127,8 +139,8 @@ References:
 @ul
 
 - **square** (N = M): @size[26px](rarely the case in real life. Solution:) `\[ \mathbf{G}^{-1} \rightarrow \mathbf{m}_{est} = \mathbf{G}^{-1} \mathbf{d}  \]` <br>
-- **overdetermined** (N &#62; M): @size[26px](most common case, robust to noise as more data points than model parameters. Least-squares solution:) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||_2 \rightarrow \mathbf{m}_{est} = (\mathbf{G^H G})^{-1} \mathbf{G^H} \mathbf{d} \]`
-- **underdetermined** (N &#60; M): @size[26px](not ideal, but sometimes only option - e.g., MRI scan. Least-squares solution:) `\[ J = || \mathbf{m}||_2 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \rightarrow \mathbf{m}_{est} =  \mathbf{G^H} (\mathbf{G G^H})^{-1}\mathbf{d} \]` @size[26px](Sparse solution:) `\[ J = || \mathbf{m}||_1 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \]`
+- **overdetermined** (N &#62; M): @size[26px](most common case, robust to noise as more data points than model parameters. Least-squares solution:) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 \rightarrow \mathbf{m}_{est} = (\mathbf{G^H G})^{-1} \mathbf{G^H} \mathbf{d} \]`
+- **underdetermined** (N &#60; M): @size[26px](not ideal, but sometimes only option - e.g., MRI scan. Least-squares solution:) `\[ J = || \mathbf{m}||^2 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \rightarrow \mathbf{m}_{est} =  \mathbf{G^H} (\mathbf{G G^H})^{-1}\mathbf{d} \]` @size[26px](Sparse solution:) `\[ J = || \mathbf{m}|| \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \]`
 @ulen
 
 +++
@@ -166,7 +178,7 @@ Let's practice @gitlink[EX1](official/timisoara_summerschool_2019/Visual_optimiz
 **G** is too large to be stored in memory
 <br><br>
 *Take on message:*
-`\[ \mathbf{m}_{est} = \sum_{i=0}^{N_{iter}} f(\mathbf{G}, \mathbf{d}, \mathbf{m}_0) \qquad \mathbf{G} \mathbf{m}, \mathbf{G}^H \mathbf{d}, (\mathbf{m}^T \mathbf{m} , \mathbf{d}^T \mathbf{d})\]`
+`\[ \mathbf{m}_{est} = \sum_{i=0}^{N_{iter}} f(\mathbf{G}, \mathbf{d}, \mathbf{m}_0) \qquad \mathbf{G} \mathbf{m}, \mathbf{G}^H \mathbf{d}, (\mathbf{m}^H \mathbf{m} , \mathbf{d}^H \mathbf{d})\]`
 
 
 ---
@@ -364,8 +376,8 @@ Add prior information to the inverse problem --> mitigate *ill-posedness*
 \]`
 
 `\[
-\mathbf{m} = (\mathbf{G}^T \mathbf{C}^{-1}_d \mathbf{G} + \mathbf{C}^{-1}_m)^{-1}
-(\mathbf{G}^T \mathbf{C}^{-1}_d \mathbf{d} + \mathbf{C}^{-1}_m \mathbf{m_0})
+\mathbf{m} = (\mathbf{G}^H \mathbf{C}^{-1}_d \mathbf{G} + \mathbf{C}^{-1}_m)^{-1}
+(\mathbf{G}^H \mathbf{C}^{-1}_d \mathbf{d} + \mathbf{C}^{-1}_m \mathbf{m_0})
 \]`
 
 
@@ -380,7 +392,7 @@ Add prior information to the inverse problem --> mitigate *ill-posedness*
 <br>
 
 `\[
-\mathbf{m} = \mathbf{m_0} + \mathbf{C}_m \mathbf{R}^T (\mathbf{R} \mathbf{C}_m \mathbf{R}^T +
+\mathbf{m} = \mathbf{m_0} + \mathbf{C}_m \mathbf{R}^H (\mathbf{R} \mathbf{C}_m \mathbf{R}^H +
 \mathbf{C}_d)^{-1} (\mathbf{d} - \mathbf{R} \mathbf{m_0})
 \]`
 
@@ -442,7 +454,7 @@ Introduce L1 norms to cost function
 
 <br>
 @ul
-- **Data misfit term**: outliers `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}|| \]`
+- **Data misfit term**: outliers `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 \]`
 - **Model**: sparse model `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{m}|| \]`
 - **Projected Model**: e.g. blocky model (projection = first derivative) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{D} \mathbf{m}|| \]`
 @ulen
@@ -526,7 +538,7 @@ Let's practice @gitlink[EX6](developement/SeismicInversion-Volve.ipynb).
 
 @ulen
 
-@snap[south span-80]
+@snap[south span-60]
 ![PyLops](official/timisoara_summerschool_2019/assets/images/pylops.png)
 @snapend
 
@@ -556,5 +568,5 @@ Let's practice @gitlink[EX6](developement/SeismicInversion-Volve.ipynb).
 @ulen
 
 @ul
-- Joblib, mpi4py, *Dask*...
+- Joblib, mpi4py, **Dask**...
 @ulen
