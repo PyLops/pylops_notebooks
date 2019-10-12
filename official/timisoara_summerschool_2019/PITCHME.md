@@ -214,10 +214,10 @@ but how do we make sure that forward and adjoint are correctly implemented? --> 
 ```python
 # forward
 def _matvec(x)
-    return self.diag &#42; x
+    return self.diag * x
 &#35; adjoint
 def _matvec(x)
-    return self.diag &#42; x
+    return self.diag * x
 ```
 @[1-3]
 @[4-7]
@@ -256,8 +256,8 @@ within a numerical tolerance:
 ```python
 def _matvec(x):
 x, y = x.squeeze(), np.zeros(self.N, self.dtype)
-y[1:-1] = (0.5 &#42; x[2:] - 0.5 &#42; x[0:-2]) / self.sampling
-&#35; edges
+y[1:-1] = (0.5 * x[2:] - 0.5 * x[0:-2]) / self.sampling
+# edges
 y[0] = (x[1] - x[0]) / self.sampling
 y[-1] = (x[-1] - x[-2]) / self.sampling
 ```
@@ -281,9 +281,9 @@ y[-1] = (x[-1] - x[-2]) / self.sampling
 ```python
 def _rmatvec(x):
 x, y = x.squeeze(), np.zeros(self.N, self.dtype)
-y[0:-2] -= (0.5 &#42; x[1:-1]) / self.sampling
-y[2:] += (0.5 &#42; x[1:-1]) / self.sampling
-&#35; edges
+y[0:-2] -= (0.5 * x[1:-1]) / self.sampling
+y[2:] += (0.5 * x[1:-1]) / self.sampling
+# edges
 y[0] -= x[0] / self.sampling
 y[1] += x[0] / self.sampling
 y[-2] -= x[-1] / self.sampling
@@ -349,9 +349,9 @@ Add information to the inverse problem --> mitigate *ill-posedness*
 ```python
 def RegularizedInversion(G, Reg, d, dreg, epsR):
 &#35; operator
-Gtot = VStack([G, epsR &#42; Reg])
+Gtot = VStack([G, epsR * Reg])
 &#35; data
-dtot = np.hstack((d, epsR*dreg))
+dtot = np.hstack((d, epsR * dreg))
 &#35; solver
 minv = lsqr(Gtot, dtot)[0]
 ```
@@ -410,12 +410,12 @@ Add prior information to the inverse problem --> mitigate *ill-posedness*
 <br><br>
 ```python
 def BayesianInversion(G, d, Cm, Cd):
-&#35; operator
-Gbayes = G * Cm &#42; G.H + Cd
-&#35; data
-dbayes = d - G &#42; m0
-&#35; solver
-minv = m0 + Cm &#42; G.H &#42; lsqr(Gbayes, dbayes)[0]
+# operator
+Gbayes = G * Cm * G.H + Cd
+# data
+dbayes = d - G * m0
+# solver
+minv = m0 + Cm * G.H * lsqr(Gbayes, dbayes)[0]
 ```
 <br>
 @snapend
@@ -445,7 +445,7 @@ Limit the range of plausible models --> mitigate *ill-posedness*
 ```python
 def PreconditionedInversion(G, P, d):
 &#35; operator
-Gtot = G &#42; P
+Gtot = G * P
 &#35; solver
 minv = lsqr(Gtot, d)[0]
 ```
