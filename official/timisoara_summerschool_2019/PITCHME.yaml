@@ -22,7 +22,7 @@ footnote : "Large scale inverse problems in geoscience"
 
 # Behavior
 transition : none
-published : True
+published : False
 
 # Plugins
 charts : true
