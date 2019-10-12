@@ -141,7 +141,7 @@ References:
 - **square** (N = M): @size[26px](rarely the case in real life. Solution:) `\[ \mathbf{G}^{-1} \rightarrow \mathbf{m}_{est} = \mathbf{G}^{-1} \mathbf{d}  \]` <br>
 - **overdetermined** (N &#62; M): @size[26px](most common case, robust to noise as more data points than model parameters. Least-squares solution:) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 \rightarrow \mathbf{m}_{est} = (\mathbf{G^H G})^{-1} \mathbf{G^H} \mathbf{d} \]`
 - **underdetermined** (N &#60; M): @size[26px](not ideal, but sometimes only option - e.g., MRI scan. Least-squares solution:) `\[ J = || \mathbf{m}||^2 \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \rightarrow \mathbf{m}_{est} =  \mathbf{G^H} (\mathbf{G G^H})^{-1}\mathbf{d} \]` @size[26px](Sparse solution:) `\[ J = || \mathbf{m}|| \quad s.t \quad  \mathbf{d} = \mathbf{G} \mathbf{m} \]`
-@ulen
+@ulend
 
 +++
 @title[Inverse problems 6]
@@ -304,7 +304,7 @@ Let's practice @gitlink[EX2](official/timisoara_summerschool_2019/Linear_Operato
 @ul
 - **Least-squares**: regularized, preconditioned, bayesian
 - **L1**: sparsity promoting, blockiness promoting
-@ulen
+@ulend
 
 @snap[south span-60 text-08]
 ![Cost_functions](official/timisoara_summerschool_2019/assets/images/cost_functions.png)
@@ -457,7 +457,7 @@ Introduce L1 norms to cost function
 - **Data misfit term**: outliers `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 \]`
 - **Model**: sparse model `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{m}|| \]`
 - **Projected Model**: e.g. blocky model (projection = first derivative) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{D} \mathbf{m}|| \]`
-@ulen
+@ulend
 <br>
 
 +++
@@ -536,7 +536,7 @@ Let's practice @gitlink[EX6](developement/SeismicInversion-Volve.ipynb).
 - Focus on fast operators as well as on advanced solvers
 - Various paradigms (deterministic, bayesian..) can share same frameworks
 
-@ulen
+@ulend
 
 @snap[south span-60]
 ![PyLops](official/timisoara_summerschool_2019/assets/images/pylops.png)
@@ -550,11 +550,11 @@ Let's practice @gitlink[EX6](developement/SeismicInversion-Volve.ipynb).
 - Computational cost of PyLops: forward and adjoint passes (dot products...)
 - Several operators are convolution filters in disguise --> leverage ML libraries
 - @gitlink[Seismic inversion example](development-cuda/SeismicInversion.ipynb): **d** = **W** **D** **m**, **W**: convolution with w, **D**: derivative = convolution with [-1, 1]
-@ulen
+@ulend
 
 @ul
 - *TensorFlow*, **PyTorch**, Cupy, PyCuda...
-@ulen
+@ulend
 
 ---
 @title[Implementation - Distributed]
@@ -565,8 +565,8 @@ Let's practice @gitlink[EX6](developement/SeismicInversion-Volve.ipynb).
 - Several operators can be easily parallelized
 - Solvers can be partially parallelized
 - MDC example: *G+* and *G-* can reach 100++ GB for 3D seismic acquisition, **G+** is a batched matrix-matrix multiplication
-@ulen
+@ulend
 
 @ul
 - Joblib, mpi4py, **Dask**...
-@ulen
+@ulend
