@@ -255,11 +255,11 @@ within a numerical tolerance:
 @snap[south span-73 text-08]
 ```python
 def _matvec(x):
-x, y = x.squeeze(), np.zeros(self.N, self.dtype)
-y[1:-1] = (0.5 * x[2:] - 0.5 * x[0:-2]) / self.sampling
-# edges
-y[0] = (x[1] - x[0]) / self.sampling
-y[-1] = (x[-1] - x[-2]) / self.sampling
+    x, y = x.squeeze(), np.zeros(self.N, self.dtype)
+    y[1:-1] = (0.5 * x[2:] - 0.5 * x[0:-2]) / self.sampling
+    # edges
+    y[0] = (x[1] - x[0]) / self.sampling
+    y[-1] = (x[-1] - x[-2]) / self.sampling
 ```
 <br><br>
 @snapend
@@ -280,14 +280,14 @@ y[-1] = (x[-1] - x[-2]) / self.sampling
 @snap[south span-73 text-08]
 ```python
 def _rmatvec(x):
-x, y = x.squeeze(), np.zeros(self.N, self.dtype)
-y[0:-2] -= (0.5 * x[1:-1]) / self.sampling
-y[2:] += (0.5 * x[1:-1]) / self.sampling
-# edges
-y[0] -= x[0] / self.sampling
-y[1] += x[0] / self.sampling
-y[-2] -= x[-1] / self.sampling
-y[-1] += x[-1] / self.sampling
+    x, y = x.squeeze(), np.zeros(self.N, self.dtype)
+    y[0:-2] -= (0.5 * x[1:-1]) / self.sampling
+    y[2:] += (0.5 * x[1:-1]) / self.sampling
+    # edges
+    y[0] -= x[0] / self.sampling
+    y[1] += x[0] / self.sampling
+    y[-2] -= x[-1] / self.sampling
+    y[-1] += x[-1] / self.sampling
 ```
 <br>
 @snapend
@@ -348,12 +348,12 @@ Add information to the inverse problem --> mitigate *ill-posedness*
 <br><br>
 ```python
 def RegularizedInversion(G, Reg, d, dreg, epsR):
-# operator
-Gtot = VStack([G, epsR * Reg])
-# data
-dtot = np.hstack((d, epsR * dreg))
-# solver
-minv = lsqr(Gtot, dtot)[0]
+    # operator
+    Gtot = VStack([G, epsR * Reg])
+    # data
+    dtot = np.hstack((d, epsR * dreg))
+    # solver
+    minv = lsqr(Gtot, dtot)[0]
 ```
 <br>
 @snapend
@@ -410,12 +410,12 @@ Add prior information to the inverse problem --> mitigate *ill-posedness*
 <br><br>
 ```python
 def BayesianInversion(G, d, Cm, Cd):
-# operator
-Gbayes = G * Cm * G.H + Cd
-# data
-dbayes = d - G * m0
-# solver
-minv = m0 + Cm * G.H * lsqr(Gbayes, dbayes)[0]
+    # operator
+    Gbayes = G * Cm * G.H + Cd
+    # data
+    dbayes = d - G * m0
+    # solver
+    minv = m0 + Cm * G.H * lsqr(Gbayes, dbayes)[0]
 ```
 <br>
 @snapend
@@ -444,10 +444,10 @@ Limit the range of plausible models --> mitigate *ill-posedness*
 <br><br>
 ```python
 def PreconditionedInversion(G, P, d):
-# operator
-Gtot = G * P
-# solver
-minv = lsqr(Gtot, d)[0]
+    # operator
+    Gtot = G * P
+    # solver
+    minv = lsqr(Gtot, d)[0]
 ```
 <br><br>
 @snapend
