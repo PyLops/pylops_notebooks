@@ -215,7 +215,7 @@ but how do we make sure that forward and adjoint are correctly implemented? --> 
 # forward
 def _matvec(x)
     return self.diag * x
-&#35; adjoint
+# adjoint
 def _matvec(x)
     return self.diag * x
 ```
@@ -348,11 +348,11 @@ Add information to the inverse problem --> mitigate *ill-posedness*
 <br><br>
 ```python
 def RegularizedInversion(G, Reg, d, dreg, epsR):
-&#35; operator
+# operator
 Gtot = VStack([G, epsR * Reg])
-&#35; data
+# data
 dtot = np.hstack((d, epsR * dreg))
-&#35; solver
+# solver
 minv = lsqr(Gtot, dtot)[0]
 ```
 <br>
@@ -444,9 +444,9 @@ Limit the range of plausible models --> mitigate *ill-posedness*
 <br><br>
 ```python
 def PreconditionedInversion(G, P, d):
-&#35; operator
+# operator
 Gtot = G * P
-&#35; solver
+# solver
 minv = lsqr(Gtot, d)[0]
 ```
 <br><br>
