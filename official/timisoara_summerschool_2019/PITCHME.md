@@ -210,19 +210,6 @@ but how do we make sure that forward and adjoint are correctly implemented? --> 
             0     & 0 & ... & d_{N} \\
         \end{bmatrix} \]`
 
-@snap[south span-50 text-09]
-<pre><code># forward
-def _matvec(x)
-    return self.diag &#42; x
-&#35; adjoint
-def _matvec(x)
-    return self.diag &#42; x
-</code></pre>
-@[1-3]
-@[4-7]
-<br><br>
-@snapend
-
 
 +++
 @title[Linear operators 3]
@@ -251,17 +238,6 @@ within a numerical tolerance:
         \end{bmatrix}
 \]`
 
-@snap[south span-73 text-08]
-<pre><code>def _matvec(x):
-x, y = x.squeeze(), np.zeros(self.N, self.dtype)
-y[1:-1] = (0.5 &#42; x[2:] - 0.5 &#42; x[0:-2]) / self.sampling
-&#35; edges
-y[0] = (x[1] - x[0]) / self.sampling
-y[-1] = (x[-1] - x[-2]) / self.sampling
-</code></pre>
-<br><br>
-@snapend
-
 
 +++
 @title[Linear operators 5]
@@ -274,20 +250,6 @@ y[-1] = (x[-1] - x[-2]) / self.sampling
             0     & 0     & ...   & -0.5 & 1 \\
         \end{bmatrix}
 \]`
-
-@snap[south span-73 text-08]
-<pre><code>def _rmatvec(x):
-x, y = x.squeeze(), np.zeros(self.N, self.dtype)
-y[0:-2] -= (0.5 &#42; x[1:-1]) / self.sampling
-y[2:] += (0.5 &#42; x[1:-1]) / self.sampling
-&#35; edges
-y[0] -= x[0] / self.sampling
-y[1] += x[0] / self.sampling
-y[-2] -= x[-1] / self.sampling
-y[-1] += x[-1] / self.sampling
-</code></pre>
-<br>
-@snapend
 
 
 +++
@@ -338,25 +300,6 @@ Add information to the inverse problem --> mitigate *ill-posedness*
 
 +++
 @title[Solvers 3]
-#### Least-squares - Regularized inversion
-Add information to the inverse problem --> mitigate *ill-posedness*
-
-@snap[midpoint span-70 text-10]
-<br><br>
-<pre><code>def RegularizedInversion(G, Reg, d, dreg, epsR):
-&#35; operator
-Gtot = VStack([G, epsR &#42; Reg])
-&#35; data
-dtot = np.hstack((d, epsR*dreg))
-&#35; solver
-minv = lsqr(Gtot, dtot)[0]
-</code></pre>
-<br>
-@snapend
-
-
-+++
-@title[Solvers 4]
 #### Least-squares - Bayesian inversion
 Add prior information to the inverse problem --> mitigate *ill-posedness*
 
@@ -382,7 +325,7 @@ Add prior information to the inverse problem --> mitigate *ill-posedness*
 
 
 +++
-@title[Solvers 5]
+@title[Solvers 4]
 #### Least-squares - Bayesian inversion
 Add prior information to the inverse problem --> mitigate *ill-posedness*
 
@@ -398,25 +341,6 @@ Add prior information to the inverse problem --> mitigate *ill-posedness*
 
 
 +++
-@title[Solvers 6]
-#### Least-squares - Bayesian inversion
-Add prior information to the inverse problem --> mitigate *ill-posedness*
-
-@snap[midpoint span-70 text-10]
-<br><br>
-<pre><code>def BayesianInversion(G, d, Cm, Cd):
-&#35; operator
-Gbayes = G * Cm &#42; G.H + Cd
-&#35; data
-dbayes = d - G &#42; m0
-&#35; solver
-minv = m0 + Cm &#42; G.H &#42; lsqr(Gbayes, dbayes)[0]
-</code></pre>
-<br>
-@snapend
-
-
-+++
 @title[Solvers 7]
 #### Least-squares - Preconditioned inversion
 Limit the range of plausible models --> mitigate *ill-posedness*
@@ -429,22 +353,6 @@ Limit the range of plausible models --> mitigate *ill-posedness*
 \mathbf{m} = \mathbf{P} \mathbf{p}
 \]`
 
-
-+++
-@title[Solvers 8]
-#### Least-squares - Preconditioned inversion
-Limit the range of plausible models --> mitigate *ill-posedness*
-
-@snap[midpoint span-70 text-10]
-<br><br>
-<pre><code>def PreconditionedInversion(G, P, d):
-&#35; operator
-Gtot = G &#42; P
-&#35; solver
-minv = lsqr(Gtot, d)[0]
-</code></pre>
-<br><br>
-@snapend
 
 
 +++
