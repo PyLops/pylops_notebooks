@@ -457,12 +457,13 @@ def PreconditionedInversion(G, P, d):
 @title[Solvers 8]
 #### Sparsity
 Introduce L1 norms to cost function
-
+<br><br>
+**Data misfit term**: outliers `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^1 \]`
 <br>
-@ul
-- **Data misfit term**: outliers `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 \]`
-- **Model**: sparse model `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{m}|| \]`
-- **Projected Model**: e.g. blocky model (projection = first derivative) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{D} \mathbf{m}|| \]`
+**Model**: sparse model `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{m}|| 
+\]`
+<br>
+**Projected Model**: e.g. blocky model (projection = first derivative) `\[ J = || \mathbf{d} - \mathbf{G} \mathbf{m}||^2 + \lambda^2 ||\mathbf{D} \mathbf{m}|| \]`
 @ulend
 <br>
 
@@ -555,7 +556,7 @@ Let's practice @gitlink[EX6](developement/SeismicInversion-Volve.ipynb).
 @ul
 - Computational cost of PyLops: forward and adjoint passes (dot products...)
 - Several operators are convolution filters in disguise --> leverage ML libraries
-- @gitlink[Seismic inversion example](development-cuda/SeismicInversion.ipynb): **d** = **W** **D** **m**, **W**: convolution with w, **D**: derivative = convolution with [-1, 1]
+- @gitlink[Seismic inversion example](developement-cuda/SeismicInversion.ipynb): **d** = **W** **D** **m**, **W**: convolution with w, **D**: derivative = convolution with [-1, 1]
 @ulend
 
 @ul
