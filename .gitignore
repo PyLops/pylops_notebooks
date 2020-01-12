@@ -18,8 +18,9 @@ developement-distributed/hostfile.txt
 data/seismicinversion/*segy
 data/marchenko/3D*
 data/marchenko/*zarr
+data/updown/input3D.npz
 
 # Slides data assimilations summer school
 official/timisoara_summerschool_2019/figures.pptx
 official/timisoara_summerschool_2019/runlocal.sh
-
+official/timisoara_summerschool_2019/PITCHME.pdf
