@@ -74,13 +74,14 @@ class SegyShot:
 			self.srcy   = self.sc * sgy.attributes(segyio.TraceField.SourceY)[::self.nrec*self.ncomponents]
 			self.srcz   = self.sc * sgy.attributes(segyio.TraceField.SourceDepth)[::self.nrec*self.ncomponents]
 
-	def showgeometry(self, local=False, figsize=(10, 10), newfig=True):
+	def showgeometry(self, local=False, onlyselected=False, figsize=(10, 10), newfig=True):
 		"""
 		Visualize geometry
 
-		:param	local: 		Local or global geometry
-		:param	figsize: 	Figure size 
-		:param	newfig: 	Create new figure or not
+		:param	local: 		   Local or global geometry
+		:param	onlyselected:  Show only selected
+		:param	figsize:       Figure size 
+		:param	newfig: 	   Create new figure or not
 
 		"""
 		if local:
@@ -92,24 +93,29 @@ class SegyShot:
 
 		if newfig==True:
 			plt.figure(figsize=figsize)
-			plt.scatter(srcx, srcy, c=np.arange(self.nsrc), cmap='jet', s=1, label='src')
+			if not onlyselected:
+				plt.scatter(srcx, srcy, c=np.arange(self.nsrc), cmap='jet', s=1, label='src')
 			plt.scatter(srcx[self.selected_src], srcy[self.selected_src], color='r', s=20, label='selected src')
-			plt.scatter(recx, recy, color='b', s=1, label='rec')
+			if not onlyselected:
+				plt.scatter(recx, recy, color='b', s=1, label='rec')
 			plt.scatter(recx[self.selected_rec], recy[self.selected_rec], color='b', s=20, label='selected rec')
 			plt.legend()
 
 		else:
-			plt.scatter(srcx, srcy, s=1, color='r', label='src')
+			if not onlyselected:
+				plt.scatter(srcx, srcy, s=1, color='r', label='src')
 			plt.scatter(srcx[self.selected_src], srcy[self.selected_src], color='r', s=20, label='selected src')
-			plt.scatter(recx, recy, s=1, color='b', label='rec')
+			if not onlyselected:
+				plt.scatter(recx, recy, s=1, color='b', label='rec')
 			plt.scatter(recx[self.selected_rec], recy[self.selected_rec], s=20, color='b', label='selected rec')
 			plt.legend()
 	
-	def rotategeometry(self, velfile, plotflag=0):
+	def rotategeometry(self, velfile, rotation=None, plotflag=0):
 		"""
 		Rotate geometry
 
 		:param	velfile: 	Filename of velocity model to use for rotation
+		:param	rotation: 	Rotation as [rot, ox, oy] (if provided, will not be inferred from velfile)
 		:param	plotflag: 	Plot intermediate results
 		"""
 		# read velocity file
@@ -124,9 +130,12 @@ class SegyShot:
 			oxvel1, oyvel1  = scvel * vel.attributes(segyio.TraceField.CDP_X)[len(vel.xlines)-1] , scvel * vel.attributes(segyio.TraceField.CDP_Y)[len(vel.xlines)-1]
 
 			# find and apply rotation
-			rot, ox, oy = segyio.tools.rotation(vel, line='fast')
-			self.ox, self.oy = scvel * ox , scvel * oy
-			self.rot = (rot - np.pi/2)
+			if rotation is not None:
+				self.rot, self.ox, self.oy = rotation
+			else:
+				rot, ox, oy = segyio.tools.rotation(vel, line='fast')
+				self.ox, self.oy = scvel * ox , scvel * oy
+				self.rot = (rot - np.pi/2)
 
 			xvel_local, yvel_local = rotate(xvel, yvel, self.ox, self.oy, self.rot)
 			oxvel_local, oyvel_local = rotate(oxvel, oyvel, self.ox, self.oy, self.rot)
