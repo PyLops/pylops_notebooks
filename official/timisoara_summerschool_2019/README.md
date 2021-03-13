@@ -5,7 +5,7 @@ at [Summer school on Data Asssimilation](https://data-assimilation.com)
 course.
 
 ## Slides
-Accesible at [![GitPitch](https://gitpitch.com/assets/badge.svg)](https://gitpitch.com/mrava87/pylops_notebooks?p=official/timisoara_summerschool_2019)
+Previously available online through GitPitch. As GitPitch has been permanently shut down, refer to the PDF version available [here](https://github.com/PyLops/pylops_notebooks/blob/master/official/timisoara_summerschool_2019/PITCHME.pdf)
 
 ## Notebooks
 
