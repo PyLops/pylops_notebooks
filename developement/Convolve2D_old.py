@@ -75,7 +75,7 @@ class Convolve2D(LinearOperator):
 
     """
     def __init__(self, N, h, dims, offset=(0, 0), nodir=None, dtype='float64'):
-        self.offset = np.array(offset, dtype=np.int)
+        self.offset = np.array(offset, dtype=np.int64)
         self.h = np.array(h)
         self.nodir = nodir
 
