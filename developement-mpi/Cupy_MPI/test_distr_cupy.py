@@ -101,7 +101,7 @@ def run():
         arr1[0][:] = 10 * cp.ones(subarr1.local_shape)
     full_arr1 = arr1.asarray()
     if rank == 0:
-        print('Modified full array:', full_arr1, type(full_arr1))
+        print('Modified full array:', full_arr1, type(full_arr1), full_arr1.device)
 
 
 if __name__ == '__main__':
