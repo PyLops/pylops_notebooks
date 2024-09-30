@@ -3,13 +3,6 @@ Test Fredholm operator
 
 Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python test_fredholm.py
 """
-#!/usr/bin/env python
-# coding: utf-8
-#
-# Fredholm object with MPI4PY
-#
-# Run: mpiexec -n 4 python fredholmmpi.py
-#
 
 import numpy as np
 import pylops_mpi

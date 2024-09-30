@@ -1,15 +1,8 @@
 r"""
-Test MDC operator with synthetic seismic data
+Test MDD with synthetic seismic data
 
-Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python test_mdc.py
+Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python test_mdd.py
 """
-#!/usr/bin/env python
-# coding: utf-8
-#
-# Fredholm object with MPI4PY
-#
-# Run: mpiexec -n 4 python fredholmmpi.py
-#
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -97,6 +90,7 @@ def run():
     ifend_rank = np.cumsum(nf_ranks)[rank]
     print(f'Rank: {rank}, nf: {nf_rank}, ifin: {ifin_rank}, ifend: {ifend_rank}')
 
+    # Extract batch of frequency slices (in practice, this will be directly read from input file)
     G = Gwav_fft[ifin_rank:ifend_rank].astype(cdtype)
     print(f'Rank: {rank}, G: {G.shape}')
      
