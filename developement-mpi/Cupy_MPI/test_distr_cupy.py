@@ -1,7 +1,9 @@
 r"""
 Test distributed cupy arrays (see https://github.com/mpi4py/mpi4py/blob/master/demo/cuda-aware-mpi/use_cupy.py)
 
-Run as: module load cuda/11.5.0/gcc-7.5.0-syen6pj; export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python test_distr_cupy.py
+Uses https://github.com/DIG-Kaust/conda_envs/blob/main/environment_pylops_cupy_mpi4py_3090.yml
+
+Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python test_distr_cupy.py
 """
 
 import os

@@ -1,6 +1,9 @@
 r"""
 Test mplinop with cupy arrays (see https://github.com/mpi4py/mpi4py/blob/master/demo/cuda-aware-mpi/use_cupy.py)
 
+Uses https://github.com/DIG-Kaust/conda_envs/blob/main/environment_pylops_cupy_mpi4py_3090.yml
+
+
 Run as: mpiexec -n 2 python test_mlinop_cupy.py
 """
 

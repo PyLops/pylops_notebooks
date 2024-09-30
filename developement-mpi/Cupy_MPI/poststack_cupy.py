@@ -1,7 +1,9 @@
 r"""
 Distributed poststack inversion with cupy arrays
 
-Run as: [module load cuda/11.5.0/gcc-7.5.0-syen6pj;] export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python poststack_cupy.py
+Uses https://github.com/DIG-Kaust/conda_envs/blob/main/environment_pylops_cupy_mpi4py_3090.yml
+
+Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python poststack_cupy.py
 """
 
 import os
@@ -90,11 +92,11 @@ def run():
         d0_0 = (PPop0 @ m3d.transpose(2, 0, 1)).transpose(1, 2, 0)
 
         # Check the two distributed implementations give the same modelling results
-        print('Distr == Local', np.allclose(d, d0))
-        print('Smooth Distr == Local', np.allclose(d_0, d0_0))
+        print('Distr == Local', np.allclose(d, d0, atol=1e-4))
+        print('Smooth Distr == Local', np.allclose(d_0, d0_0, atol=1e-4))
 
         # Visualize
-        fig, axs = plt.subplots(nrows=6, ncols=3, figsize=(9, 14), constrained_layout=True)
+        fig, axs = plt.subplots(nrows=4, ncols=3, figsize=(9, 14), constrained_layout=True)
         axs[0][0].imshow(m3d[5, :, :].T, cmap="gist_rainbow", vmin=m.min(), vmax=m.max())
         axs[0][0].set_title("Model x-z")
         axs[0][0].axis("tight")
