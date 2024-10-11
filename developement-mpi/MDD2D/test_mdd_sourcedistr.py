@@ -1,7 +1,7 @@
 r"""
-Test MDD with synthetic seismic data
+Test MDD with synthetic seismic data distributing data over sources
 
-Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python test_mdd.py
+Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python test_mdd_sourcedistr.py
 """
 
 import numpy as np
@@ -11,13 +11,12 @@ import pylops_mpi
 from pylops.utils.seismicevents import hyperbolic2d, makeaxis
 from pylops.utils.tapers import taper3d
 from pylops.utils.wavelets import ricker
+from pylops.basicoperators import Transpose
 from pylops.waveeqprocessing import MDC
 from pylops.optimization.basic import cgls
 
 from mpi4py import MPI
 from pylops_mpi.DistributedArray import local_split, Partition
-from pylops_mpi.waveeqprocessing.MDC import MPIMDC
-
 
 def run():
     comm = MPI.COMM_WORLD
@@ -83,21 +82,24 @@ def run():
     Gwav_fft = Gwav_fft.transpose(2, 0, 1)
 
     # Choose how to split sources to ranks
-    nf = par["nfmax"]
-    nf_rank = local_split((nf, ), MPI.COMM_WORLD, Partition.SCATTER, 0)
-    nf_ranks = np.concatenate(MPI.COMM_WORLD.allgather(nf_rank))
-    ifin_rank = np.insert(np.cumsum(nf_ranks)[:-1] , 0, 0)[rank]
-    ifend_rank = np.cumsum(nf_ranks)[rank]
-    print(f'Rank: {rank}, nf: {nf_rank}, ifin: {ifin_rank}, ifend: {ifend_rank}')
+    ns = par["ny"]
+    ns_rank = local_split((ns, ), MPI.COMM_WORLD, Partition.SCATTER, 0)
+    ns_ranks = np.concatenate(MPI.COMM_WORLD.allgather(ns_rank))
+    isin_rank = np.insert(np.cumsum(ns_ranks)[:-1] , 0, 0)[rank]
+    isend_rank = np.cumsum(ns_ranks)[rank]
+    print(f'Rank: {rank}, ns: {ns_rank}, ifin: {isin_rank}, ifend: {isend_rank}')
 
     # Extract batch of frequency slices (in practice, this will be directly read from input file)
-    G = Gwav_fft[ifin_rank:ifend_rank].astype(cdtype)
+    G = Gwav_fft[:,isin_rank:isend_rank].astype(cdtype)
     print(f'Rank: {rank}, G: {G.shape}')
      
     # Define operator
-    Fop = MPIMDC(G, nt=2 * par["nt"] - 1, nv=1, nfreq=nf, 
-                 dt=0.004, dr=1.0, twosided=True)
-    
+    Fop = MDC((1.0 * 0.004 * np.sqrt(par["nt"])) * G, nt=2 * par["nt"] - 1, nv=1, 
+              dt=0.004, dr=1.0, twosided=True, prescaled=True)
+
+    Top = Transpose(dims=(2 * par["nt"] - 1, ns_rank[0]), axes=(1, 0))
+    Foptot = pylops_mpi.MPIVStack(ops=[Top * Fop , ])
+
     # Apply forward
     x = pylops_mpi.DistributedArray(global_shape=(2 * par["nt"] - 1) * par["nx"] * 1, 
                                     partition=Partition.BROADCAST,
@@ -105,19 +107,20 @@ def run():
     x[:] = m.astype(dtype).ravel()
     xloc = x.asarray()
 
-    y = Fop @ x
+    y = Foptot @ x
     yloc = y.asarray().real
+    print(f'Rank: {rank}, y.localarray: {y.local_array.shape}, ns_rank: {ns_rank[0]}')
     
     if rank == 0:
         plt.figure()
-        plt.imshow(yloc.reshape(2 * par["nt"] - 1, par["ny"]), aspect="auto", interpolation="nearest",
+        plt.imshow(yloc.reshape(par["ny"], 2 * par["nt"] - 1).T, aspect="auto", interpolation="nearest",
                    cmap="gray", vmin=-yloc.max(), vmax=yloc.max())
         plt.savefig('data_mpi.png')
 
     # Compare with serial computation
     if rank == 0:
-        Fop_ = MDC(Gwav_fft, nt=2 * par["nt"] - 1, nv=1, 
-                   dt=0.004, dr=1.0, twosided=True)
+        Fop_ = MDC((1.0 * 0.004 * np.sqrt(par["nt"])) * Gwav_fft, nt=2 * par["nt"] - 1, nv=1,
+                   dt=0.004, dr=1.0, twosided=True, prescaled=True)
         y_ = Fop_ @ m.ravel()
 
         print('Forward check', np.allclose(yloc, y_, atol=1e-6))
@@ -129,12 +132,13 @@ def run():
         plt.savefig('data.png')
 
         plt.figure()
-        plt.imshow((yloc-y_).reshape(2 * par["nt"] - 1, par["ny"]), aspect="auto", interpolation="nearest",
+        plt.imshow(yloc.reshape(par["ny"], 2 * par["nt"] - 1).T - y_.reshape(2 * par["nt"] - 1, par["ny"]), 
+                   aspect="auto", interpolation="nearest",
                    cmap="gray", vmin=-0.1*y_.max(), vmax=0.1*y_.max())
         plt.savefig('data_err.png')
     
     # Apply adjoint
-    xadj = Fop.H @ y
+    xadj = Foptot.H @ y
     xadjloc = xadj.asarray().real
     
     if rank == 0:
@@ -166,7 +170,7 @@ def run():
                                      dtype=cdtype)
     x0[:] = 0
 
-    xinv = pylops_mpi.cgls(Fop, y, x0=x0, niter=50, show=True)[0]
+    xinv = pylops_mpi.cgls(Foptot, y, x0=x0, niter=50, show=True if rank == 0 else False)[0]
     xinvloc = xinv.asarray().real
 
     if rank == 0:

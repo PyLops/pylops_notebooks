@@ -25,18 +25,18 @@ def run():
 
     # Create part of G at each node (this will be eventually be read from file)
     # G will be of size ns x ny x nx
-    # x will be of size 2*nt-1 x nx x nv
-    # y will be of size 2*nt-1 x ny x nv
+    # x will be of size nt x nx x nv
+    # y will be of size nt x ny x nv
     # nt, ns = 1001, 501
     # ny, nx, nv = 1001, 501, 201
-    nt, ns = 1201, 801
+    nt, ns = 1201, 401
     ny, nx, nv = 501, 301, 101
 
     if rank == 0:
         print(f'Testing MDC with {size} ranks')
         print(f'G = {ns} x {ny} x {nx}')
-        print(f'x = {2*nt-1} x {nx} x {nv}')
-        print(f'y = {2*nt-1} x {ny} x {nv}')
+        print(f'x = {nt} x {nx} x {nv}')
+        print(f'y = {nt} x {ny} x {nv}')
         print(f'-----------------------------\n\n\n')
         sys.stdout.flush()
 
@@ -61,14 +61,14 @@ def run():
         del G_
 
     # Define operator
-    Fop = MPIMDC(G, nt=2*nt-1, nv=nv, nfreq=ns, dt=1, dr=1,
-                 usematmul=True, saveGt=False, twosided=True)
+    Fop = MPIMDC(G, nt=nt, nv=nv, nfreq=ns, dt=1, dr=1, fftengine="scipy",
+                 usematmul=True, saveGt=False, twosided=False)
     
     # Define distributed array for input
-    x = pylops_mpi.DistributedArray(global_shape=(2*nt-1) * nx * nv, 
+    x = pylops_mpi.DistributedArray(global_shape=nt * nx * nv,
                                     partition=Partition.BROADCAST,
                                     dtype=dtype)
-    x[:] = np.random.normal(0., 1., (2*nt-1, nx, nv)).astype(dtype).ravel()
+    x[:] = np.random.normal(0., 1., (nt, nx, nv)).astype(dtype).ravel()
     xloc = x.asarray()
 
     # Apply forward
@@ -80,30 +80,23 @@ def run():
     if rank == 0:
         tstop = time.perf_counter()
         print("MPIMDCforward - Elapsed time:", tstop - tstart)
-        sys.stdout.flush()
+        print("MPIMDCforward - Dtype output:", yloc.dtype)
 
-    if rank == 0:
-        plt.figure()
-        plt.imshow(yloc.reshape(2 * nt - 1, ny, nv)[..., 0], aspect="auto", interpolation="nearest",
-                   cmap="gray", vmin=-yloc.max(), vmax=yloc.max())
-        plt.savefig('datarand_mpi.png')
+        sys.stdout.flush()
 
     # Compare with serial computation
     if rank == 0:
-        Fop_ = MDC(G_, nt=2*nt-1, nv=nv, dt=1, dr=1,
-                   usematmul=True, saveGt=False, twosided=True)
+
+        Fop_ = MDC(G_, nt=nt, nv=nv, dt=1, dr=1, fftengine="scipy",
+                   usematmul=True, saveGt=False, twosided=False)
         tstart = time.perf_counter()
         y_ = (Fop_ @ xloc).real
         tstop = time.perf_counter()
         print("MDCforward - Elapsed time:", tstop - tstart)
+        print("MDCforward - Dtype output:", y_.dtype)
 
         print('Forward check', np.allclose(yloc, y_))
         print(yloc[:10], y_[:10])
-
-        plt.figure()
-        plt.imshow(y_.reshape(2 * nt - 1, ny, nv)[..., 0], aspect="auto", interpolation="nearest",
-                   cmap="gray", vmin=-y_.max(), vmax=y_.max())
-        plt.savefig('datarand.png')
 
 if __name__ == '__main__':
     run()
