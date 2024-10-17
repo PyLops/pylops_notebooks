@@ -1,5 +1,5 @@
 r"""
-Test MDC operator with random numbers
+Test MDC operator with random numbers distributing data over sources
 
 Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 8 python test_mdc_srcsdist_random.py
 """
