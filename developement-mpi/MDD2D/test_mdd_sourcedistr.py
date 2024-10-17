@@ -96,7 +96,6 @@ def run():
     # Define operator
     Fop = MDC((1.0 * 0.004 * np.sqrt(par["nt"])) * G, nt=2 * par["nt"] - 1, nv=1, 
               dt=0.004, dr=1.0, twosided=True, prescaled=True)
-
     Top = Transpose(dims=(2 * par["nt"] - 1, ns_rank[0]), axes=(1, 0))
     Foptot = pylops_mpi.MPIVStack(ops=[Top * Fop , ])
 

@@ -1,7 +1,7 @@
 r"""
 Test MDC operator with random numbers
 
-Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 8 python test_mdc_random.py
+Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 8 python test_mdc_freqdist_random.py
 """
 
 import sys
@@ -52,7 +52,6 @@ def run():
         1j * np.random.normal(0., 1., (ns_rank[0], ny, nx)).astype(dtype)
     print(f'Rank: {rank}, G: {G.shape}')
     sys.stdout.flush()
-
 
     G_ = np.vstack(comm.allgather(G))
     if rank == 0:
