@@ -40,7 +40,7 @@ def run():
         "f0": 20,
         "nfmax": 200,
     }
-    nvs = 21
+    nvs = 20
 
     t0_m = 0.2
     vrms_m = 1100.0
@@ -61,7 +61,7 @@ def run():
 
     # Generate model
     m, mwav = np.zeros((nvs, par['nx'], par['nt'])), np.zeros((nvs, par['nx'], par['nt']))
-    for ix, x0 in enumerate(x[par["nx"]//2 - nvs//2: par["nx"]//2 + nvs//2 + 1]):
+    for ix, x0 in enumerate(x[par["nx"]//2 - nvs//2: par["nx"]//2 + nvs//2 + (0 if nvs % 2 == 0 else 1)]):
         m[ix], mwav[ix] = hyperbolic2d(x - x0, t, t0_m, vrms_m, amp_m, wav)
     print('m.shape', m.shape)
 
