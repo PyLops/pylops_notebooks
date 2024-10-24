@@ -17,29 +17,17 @@ from pylops.waveeqprocessing import MDC
 from pylops.optimization.basic import cgls
 
 from mpi4py import MPI
-from pylops_mpi.DistributedArray import Partition
-from MDC import MPIMDC
-
-
-def local_split_customranks(global_shape, nranks, rank, partition, axis):
-    if partition == Partition.BROADCAST:
-        local_shape = global_shape
-    # Split the array
-    else:
-        local_shape = list(global_shape)
-        if rank < (global_shape[axis] % nranks):
-            local_shape[axis] = global_shape[axis] // nranks + 1
-        else:
-            local_shape[axis] = global_shape[axis] // nranks
-    return tuple(local_shape)
+from pylops_mpi.DistributedArray import local_split, Partition
+from MDC2Ddistr import MPIMDC2Ddistr
+from utils import *
 
 
 def run(parser):
     parser.add_argument('--nfranks', type=int, default=2, help="Number of ranks for frequencies")
     parser.add_argument("--nvsranks", type=int, default=2, help="Number of ranks for virtual sources")
-
     args = parser.parse_args()
 
+    # MPI and other input parameters
     comm = MPI.COMM_WORLD
     size = comm.Get_size() # number of nodes
     rank = comm.Get_rank() # rank of current node
@@ -55,14 +43,21 @@ def run(parser):
     rankf, rankvs = np.unravel_index(rank, (args.nfranks, args.nvsranks))
     rankf_all = np.array(MPI.COMM_WORLD.allgather(rankf))
     rankvs_all = np.array(MPI.COMM_WORLD.allgather(rankvs))
-    print(f'Rank {rank}: rankf {rankf}, rankvs {rankvs}')
     if rank == 0:
         print(f'Rank {rank}: rankf_all {rankf_all}, rankvs_all {rankvs_all}')
-    sys.stdout.flush()
-    comm.barrier()
-    time.sleep(2)
+    pause(comm)
+    print(f'Rank {rank}: rankf {rankf}, rankvs {rankvs}')
+    pause(comm)
 
-    # Create data
+    # Create subcomms
+    subcomm_f = comm.Split(color=rankf, key=rank)
+    print('Rank', rank, ': Subcomm_f rank', subcomm_f.Get_rank(), 'color', rankf)
+    pause(comm)
+    subcomm_vs = comm.Split(color=rankvs, key=rank)
+    print('Rank', rank, ': Subcomm_vs rank', subcomm_vs.Get_rank(), 'color', rankvs)
+    pause(comm)
+
+    # Input parameters
     par = {
         "ox": -300,
         "dx": 10,
@@ -76,8 +71,7 @@ def run(parser):
         "f0": 20,
         "nfmax": 200,
     }
-    nvs = 20
-
+    nvs = 21
     t0_m = 0.2
     vrms_m = 1100.0
     amp_m = 1.0
@@ -85,6 +79,25 @@ def run(parser):
     t0_G = (0.2, 0.5, 0.7)
     vrms_G = (1200.0, 1500.0, 2000.0)
     amp_G = (1.0, 0.6, 0.5)
+
+    # Choose how to split frequencies to ranks
+    nf = par["nfmax"]
+    nf_ranks, ifin_ranks, ifend_ranks, nf_rank, ifin_rank, ifend_rank = \
+        local_split_startend(nf, rank, subcomm_vs, args.nvsranks, rep=np.repeat)
+    if rank == 0:
+        print(f'Rank {rank}: nf_ranks {nf_ranks}, ifin_ranks: {ifin_ranks}, ifend_ranks: {ifend_ranks}')
+    pause(comm)
+    print(f'Rank: {rank}: nf: {nf_rank}, ifin: {ifin_rank}, ifend: {ifend_rank}')
+    pause(comm)
+
+    # Choose how to split virtual sources to ranks
+    nvs_ranks, ivsin_ranks, ivsend_ranks, nvs_rank, ivsin_rank, ivsend_rank = \
+        local_split_startend(nvs, rank, subcomm_f, args.nfranks, rep=np.tile)
+    if rank == 0:
+        print(f'Rank {rank}: nvs_ranks: {ivsin_ranks}, ivsin_ranks: {ivsin_ranks}, ivsend_ranks: {ivsend_ranks}')
+    pause(comm)
+    print(f'Rank {rank}: nvs: {nvs_rank}, ivsin: {ivsin_rank}, ivsend: {ivsend_rank}')
+    pause(comm)
 
     # Taper
     tap = taper3d(par["nt"], (par["ny"], par["nx"]), (5, 5), tapertype="hanning")
@@ -99,8 +112,6 @@ def run(parser):
     m, mwav = np.zeros((nvs, par['nx'], par['nt'])), np.zeros((nvs, par['nx'], par['nt']))
     for ix, x0 in enumerate(x[par["nx"]//2 - nvs//2: par["nx"]//2 + nvs//2 + (0 if nvs % 2 == 0 else 1)]):
         m[ix], mwav[ix] = hyperbolic2d(x - x0, t, t0_m, vrms_m, amp_m, wav)
-    if rank == 0:
-        print('m.shape', m.shape)
 
     # Generate operator
     G, Gwav = np.zeros((par["ny"], par["nx"], par["nt"])), np.zeros(
@@ -123,6 +134,7 @@ def run(parser):
     m, mwav = m.transpose(2, 1, 0), mwav.transpose(2, 1, 0)
     Gwav_fft = Gwav_fft.transpose(2, 0, 1)
 
+    # Display model with wavelet
     if rank == 0:
         plt.figure(figsize=(20, 6))
         plt.imshow(mwav.reshape(2 * par["nt"] - 1, par["nx"], nvs).transpose(0, 2, 1).reshape(2 * par["nt"] - 1, -1),
@@ -130,100 +142,48 @@ def run(parser):
                    cmap="gray", vmin=-mwav.max(), vmax=mwav.max())
         plt.savefig('mwav_distrfvs_mpi.png')
 
-    # Choose how to split frequencies to ranks
-    nf = par["nfmax"]
-    nf_rank = local_split_customranks((nf, ), args.nfranks, rankf, Partition.SCATTER, 0)
-    nf_ranks = np.concatenate(MPI.COMM_WORLD.allgather(nf_rank))[::args.nvsranks]
-    ifin_rank = np.insert(np.cumsum(nf_ranks)[:-1] , 0, 0)
-    ifend_rank = np.cumsum(nf_ranks)
-    nf_ranks = np.repeat(nf_ranks, args.nvsranks)
-    nf_rank = nf_ranks[rank]
-    ifin_rank = np.repeat(ifin_rank, args.nvsranks)[rank]
-    ifend_rank = np.repeat(ifend_rank, args.nvsranks)[rank]
-    print(f'Rank: {rank}, nf: {nf_rank}, ifin: {ifin_rank}, ifend: {ifend_rank}')
-    sys.stdout.flush()
-    comm.barrier()
-    time.sleep(4)
-
-    # Choose how to split virtual sources to ranks
-    nvs_rank = local_split_customranks((nvs,), args.nvsranks, rankvs, Partition.SCATTER, 0)
-    nvs_ranks = np.concatenate(MPI.COMM_WORLD.allgather(nvs_rank))[:args.nvsranks]
-    ivsin_ranks = np.insert(np.cumsum(nvs_ranks)[:-1], 0, 0)
-    ivsend_ranks = np.cumsum(nvs_ranks)
-    nvs_ranks = np.tile(nvs_ranks, args.nfranks)
-    if rank == 0:
-        print(f'Rank: {rank}, nvs_ranks: {ivsin_ranks}, ivsin_ranks: {ivsin_ranks}, ivsend_ranks: {ivsend_ranks}')
-    nvs_rank = nvs_ranks[rank]
-    ivsin_rank = np.tile(ivsin_ranks, args.nvsranks)[rank]
-    ivsend_rank = np.tile(ivsend_ranks, args.nvsranks)[rank]
-    print(f'Rank: {rank}, nvs: {nvs_rank}, ivsin: {ivsin_rank}, ivsend: {ivsend_rank}')
-    sys.stdout.flush()
-    comm.barrier()
-    time.sleep(2)
-
     # Extract batch of frequency slices (in practice, this will be directly read from input file)
     G = Gwav_fft[ifin_rank:ifend_rank].astype(cdtype)
     print(f'Rank: {rank}, G: {G.shape}')
-    sys.stdout.flush()
-    comm.barrier()
-    time.sleep(2)
+    pause(comm)
 
     # Extract batch of virtual points (in practice, this will be directly read from input file)
     mrank = m[..., ivsin_rank:ivsend_rank].astype(dtype)
     print(f'Rank: {rank}, m: {mrank.shape}')
-    sys.stdout.flush()
-    comm.barrier()
-    time.sleep(2)
-
-    # Create subcomms
-    subcomm_f = comm.Split(color=rankf, key=rank)
-    print('Rank', rank, 'Subcomm_f rank', subcomm_f.Get_rank(), 'color', rankf)
-    sys.stdout.flush()
-    comm.barrier()
-    time.sleep(2)
-    subcomm_vs = comm.Split(color=rankvs, key=rank)
-    print('Rank', rank, 'Subcomm_vs rank', subcomm_vs.Get_rank(), 'color', rankvs)
-    sys.stdout.flush()
-    comm.barrier()
-    time.sleep(2)
+    pause(comm)
 
     # Define operator
-    Fop = MPIMDC((1.0 * 0.004 * np.sqrt(par["nt"])) * G, nt=2 * par["nt"] - 1, nv=nvs, nfreq=nf,
-                 subcomm_f=subcomm_f, subcomm_v=subcomm_vs, mask=rankf_all,
-                 dt=0.004, dr=1.0, twosided=True, fftengine="scipy",
-                 usematmul=True, prescaled=True)
+    Fop = MPIMDC2Ddistr((1.0 * 0.004 * np.sqrt(par["nt"])) * G, nt=2 * par["nt"] - 1, nv=nvs, nfreq=nf,
+                        subcomm_f=subcomm_f, subcomm_v=subcomm_vs, mask=rankf_all,
+                        dt=0.004, dr=1.0, twosided=True, fftengine="scipy",
+                        usematmul=True, prescaled=True)
+
     # Apply forward
     x = pylops_mpi.DistributedArray(global_shape=(2 * par["nt"] - 1) * par["nx"] * nvs * args.nfranks,
                                     local_shapes=[(2 * par["nt"] - 1) * par["nx"] * nvsr for nvsr in nvs_ranks],
                                     partition=Partition.SCATTER, mask=rankf_all,
                                     dtype=dtype)
-    print('x.mask, x.sub_comm', x.mask, x.sub_comm)
     x[:] = mrank.astype(dtype).ravel()
 
     y = Fop @ x
     yloc = y.asarray().real
-    print('y.local_shapes', y.local_shapes)
-    print('y.mask', y.mask) # NEED TO FIND WAY TO GET THIS MASK LIKE THAT OF X!!!!
 
-    # reorganize yloc to get individual portions...
-    yloc1 = np.zeros(((2 * par["nt"] - 1), par["ny"], nvs))
-    for ivs in range(args.nvsranks):
-        # print('y.local_shapes', y.local_shapes)
-        # print('ivs', ivs, 0 if ivs == 0 else np.sum([ls[0] for ls in y.local_shapes[:ivs]]), np.sum([ls[0] for ls in y.local_shapes[:ivs + 1]]))
-        yloc_tmp = yloc[0 if ivs == 0 else np.sum([ls[0] for ls in y.local_shapes[:ivs]]): np.sum([ls[0] for ls in y.local_shapes[:ivs + 1]])].reshape(
-            (2 * par["nt"] - 1), par["ny"], -1)
-        yloc1[:, :, ivsin_ranks[ivs]:ivsend_ranks[ivs]] = yloc_tmp
-
+    # Reorganize yloc to get individual portions...
+    yloc1 = reorganize_distributed_2d(yloc, ((2 * par["nt"] - 1), par["ny"], nvs),
+                                      y.local_shapes, ivsin_ranks, ivsend_ranks)
+    """
+    # Checking that the first and second repetitions of a masked array are identical
     yloc2 = np.zeros(((2 * par["nt"] - 1), par["ny"], nvs))
-    for ivs in range(args.nvsranks, 2*args.nvsranks):
+    for ivs in range(args.nvsranks, 2 * args.nvsranks):
         # print('y.local_shapes', y.local_shapes)
         # print('ivs', ivs, 0 if ivs == 0 else np.sum([ls[0] for ls in y.local_shapes[:ivs]]), np.sum([ls[0] for ls in y.local_shapes[:ivs + 1]]))
         yloc_tmp = yloc[0 if ivs == 0 else np.sum([ls[0] for ls in y.local_shapes[:ivs]]): np.sum(
-            [ls[0] for ls in y.local_shapes[:ivs + 1]])].reshape(
-            (2 * par["nt"] - 1), par["ny"], -1)
+            [ls[0] for ls in y.local_shapes[:ivs + 1]])].reshape((2 * par["nt"] - 1), par["ny"], -1)
         yloc2[:, :, ivsin_ranks[ivs - args.nvsranks]:ivsend_ranks[ivs - args.nvsranks]] = yloc_tmp
-    print('np.allclose(yloc1,yloc2)', np.allclose(yloc1,yloc2))
+    print('np.allclose(yloc1, yloc2)', np.allclose(yloc1, yloc2))
+    """
 
+    # Display data
     if rank == 0:
         plt.figure(figsize=(20, 6))
         plt.imshow(yloc1.transpose(0, 2, 1).reshape(2 * par["nt"] - 1, -1),
@@ -252,14 +212,11 @@ def run(parser):
     xadj = Fop.H @ y
     xadjloc = xadj.asarray().real
 
-    # reorganize xadjloc
-    xadjloc1 = np.zeros(((2 * par["nt"] - 1), par["nx"], nvs))
-    for ivs in range(args.nvsranks):
-        xadjloc_tmp = xadjloc[0 if ivs == 0 else np.sum([ls[0] for ls in xadj.local_shapes[:ivs]]): np.sum(
-            [ls[0] for ls in xadj.local_shapes[:ivs + 1]])].reshape(
-            (2 * par["nt"] - 1), par["nx"], -1)
-        xadjloc1[:, :, ivsin_ranks[ivs]:ivsend_ranks[ivs]] = xadjloc_tmp
+    # Reorganize xadjloc
+    xadjloc1 = reorganize_distributed_2d(xadjloc, ((2 * par["nt"] - 1), par["nx"], nvs),
+                                         xadj.local_shapes, ivsin_ranks, ivsend_ranks)
 
+    # Display adjoint
     if rank == 0:
         plt.figure(figsize=(20, 6))
         plt.imshow(xadjloc1.transpose(0, 2, 1).reshape(2 * par["nt"] - 1, -1),
@@ -293,14 +250,11 @@ def run(parser):
     xinv = pylops_mpi.cgls(Fop, y, x0=x0, niter=50, show=True if rank == 0 else False)[0]
     xinvloc = xinv.asarray().real
 
-    # reorganize xinvloc
-    xinvloc1 = np.zeros(((2 * par["nt"] - 1), par["nx"], nvs))
-    for ivs in range(args.nvsranks):
-        xinvloc_tmp = xinvloc[0 if ivs == 0 else np.sum([ls[0] for ls in xinv.local_shapes[:ivs]]): np.sum(
-            [ls[0] for ls in xinv.local_shapes[:ivs + 1]])].reshape(
-            (2 * par["nt"] - 1), par["nx"], -1)
-        xinvloc1[:, :, ivsin_ranks[ivs]:ivsend_ranks[ivs]] = xinvloc_tmp
+    # Reorganize xinvloc
+    xinvloc1 = reorganize_distributed_2d(xinvloc, ((2 * par["nt"] - 1), par["nx"], nvs),
+                                         xinv.local_shapes, ivsin_ranks, ivsend_ranks)
 
+    # Display inverse
     if rank == 0:
         plt.figure(figsize=(20, 6))
         plt.imshow(xinvloc1.transpose(0, 2, 1).reshape(2 * par["nt"] - 1, -1),

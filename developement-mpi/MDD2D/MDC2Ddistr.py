@@ -7,7 +7,7 @@ from pylops.signalprocessing import FFT, Fredholm1
 
 from pylops_mpi.DistributedArray import local_split, Partition
 from pylops_mpi.basicoperators import MPIBlockDiag
-from Fredholm1 import MPIFredholm1
+from Fredholm12Ddist import MPIFredholm12Ddist
 
 
 def _MDC(G, nt, nv, nfmax, subcomm_f, subcomm_v, mask,
@@ -36,7 +36,6 @@ def _MDC(G, nt, nv, nfmax, subcomm_f, subcomm_v, mask,
 
     # find out local split for v
     nv_rank = local_split((nv, ), subcomm_f, Partition.SCATTER, 0)[0]
-    print('Rank', base_comm.Get_rank(), nv_rank)
 
     # create Fredholm operator
     if prescaled:
@@ -85,13 +84,13 @@ def _MDC(G, nt, nv, nfmax, subcomm_f, subcomm_v, mask,
     return MDCop
 
 
-def MPIMDC(G, nt, nv, nfreq,
-           subcomm_f,  subcomm_v, mask,
-           dt=1., dr=1., twosided=True,
-           fftengine='numpy',
-           saveGt=True, conj=False,
-           usematmul=False, prescaled=False,
-           base_comm: MPI.Comm = MPI.COMM_WORLD):
+def MPIMDC2Ddistr(G, nt, nv, nfreq,
+                  subcomm_f,  subcomm_v, mask,
+                  dt=1., dr=1., twosided=True,
+                  fftengine='numpy',
+                  saveGt=True, conj=False,
+                  usematmul=False, prescaled=False,
+                  base_comm: MPI.Comm = MPI.COMM_WORLD):
     r"""Multi-dimensional convolution.
 
     Apply multi-dimensional convolution between two datasets in a distributed
@@ -120,7 +119,7 @@ def MPIMDC(G, nt, nv, nfreq,
         Number of samples along frequency axis
     subcomm_f : :obj:`mpi4py.MPI.Comm`, optional
         MPI Sub-Communicator across frequencies
-    subcomm_c : :obj:`mpi4py.MPI.Comm`, optional
+    subcomm_v : :obj:`mpi4py.MPI.Comm`, optional
         MPI Sub-Communicator across virtual sources
     mask : :obj:`list`, optional
         Mask defining subsets of ranks to consider when performing 'global'
@@ -157,10 +156,6 @@ def MPIMDC(G, nt, nv, nfreq,
     ------
     ValueError
         If ``nt`` is even and ``twosided=True``
-
-    See Also
-    --------
-    MDD : Multi-dimensional deconvolution
 
     Notes
     -----
@@ -201,7 +196,7 @@ def MPIMDC(G, nt, nv, nfreq,
                 dt=dt, dr=dr, twosided=twosided,
                 saveGt=saveGt, conj=conj, prescaled=prescaled,
                 base_comm=base_comm,
-                _Fredholm1=MPIFredholm1,
+                _Fredholm1=MPIFredholm12Ddist,
                 args_FFT={"engine": fftengine},
                 args_FFT1={"engine": fftengine},
                 args_Fredholm1={'usematmul': usematmul})

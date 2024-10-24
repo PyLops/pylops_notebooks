@@ -11,7 +11,7 @@ from pylops_mpi import (
 from pylops_mpi.DistributedArray import local_split, Partition
 
 
-class MPIFredholm1(MPILinearOperator):
+class MPIFredholm12Ddist(MPILinearOperator):
     r"""Fredholm integral of first kind.
 
     Implement a multi-dimensional Fredholm integral of first kind distributed
