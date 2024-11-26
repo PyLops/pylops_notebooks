@@ -15,15 +15,15 @@ from pylops.waveeqprocessing import MDC
 
 from mpi4py import MPI
 from pylops_mpi.DistributedArray import local_split, Partition
-from pylops_mpi.waveeqprocessing.MDC import MPIMDC
+from pylops_mpi.utils.dottest import dottest as mpidottest
 
 
 def run():
     comm = MPI.COMM_WORLD
     size = comm.Get_size() # number of nodes
     rank = comm.Get_rank() # rank of current node
-    dtype = np.float32
-    cdtype = np.complex64
+    dtype = np.float64
+    cdtype = np.complex128
     rng = np.random.default_rng()
 
     # Create part of G at each node (this will be eventually be read from file)
@@ -51,6 +51,7 @@ def run():
     print(f'Rank: {rank}, ns: {ny_rank}, iyin: {iyin_rank}, iyend: {iyend_rank}')
     sys.stdout.flush()
 
+    np.random.seed(10)
     G = np.zeros((ns, ny_rank[0], nx), dtype=cdtype)
     for iy_rank in range(ny_rank[0]):
         G[:, iy_rank] = (rng.standard_normal(size=(ns, nx), dtype=dtype) + \
@@ -75,8 +76,9 @@ def run():
     Foptot = pylops_mpi.MPIVStack(ops=[Top * Fop, ])
 
     # Define distributed array for input
+    np.random.seed(10)
     x = pylops_mpi.DistributedArray(global_shape=nt * nx * nv,
-                                    partition=Partition.BROADCAST,
+                                    partition=Partition.UNSAFE_BROADCAST,
                                     dtype=dtype)
     x[:] = np.random.normal(0., 1., (nt, nx, nv)).astype(dtype).ravel()
     xloc = x.asarray()
@@ -91,8 +93,10 @@ def run():
         tstop = time.perf_counter()
         print("MPIMDCforward - Elapsed time:", tstop - tstart)
         print("MPIMDCforward - Dtype output:", yloc.dtype)
-
         sys.stdout.flush()
+
+    # Dot test
+    mpidottest(Foptot, x, y, raiseerror=False, verb=True)
 
     # Compare with serial computation
     if rank == 0:

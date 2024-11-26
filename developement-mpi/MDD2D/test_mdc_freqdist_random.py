@@ -11,17 +11,19 @@ import matplotlib.pyplot as plt
 import pylops_mpi
 
 from pylops.waveeqprocessing import MDC
+from pylops.utils.dottest import dottest
 
 from mpi4py import MPI
 from pylops_mpi.DistributedArray import local_split, Partition
 from pylops_mpi.waveeqprocessing.MDC import MPIMDC
+from pylops_mpi.utils.dottest import dottest as mpidottest
 
 
 def run():
     comm = MPI.COMM_WORLD
     size = comm.Get_size() # number of nodes
     rank = comm.Get_rank() # rank of current node
-    dtype = np.float32
+    dtype = np.float64 # np.float32
 
     # Create part of G at each node (this will be eventually be read from file)
     # G will be of size ns x ny x nx
@@ -48,6 +50,7 @@ def run():
     print(f'Rank: {rank}, ns: {ns_rank}, isin: {isin_rank}, isend: {isend_rank}')
     sys.stdout.flush()
 
+    np.random.seed(10)
     G = np.random.normal(0., 1., (ns_rank[0], ny, nx)).astype(dtype) + \
         1j * np.random.normal(0., 1., (ns_rank[0], ny, nx)).astype(dtype)
     print(f'Rank: {rank}, G: {G.shape}')
@@ -64,11 +67,13 @@ def run():
                  usematmul=True, saveGt=False, twosided=False)
     
     # Define distributed array for input
+    np.random.seed(10)
     x = pylops_mpi.DistributedArray(global_shape=nt * nx * nv,
-                                    partition=Partition.BROADCAST,
+                                    partition=Partition.UNSAFE_BROADCAST,
                                     dtype=dtype)
     x[:] = np.random.normal(0., 1., (nt, nx, nv)).astype(dtype).ravel()
     xloc = x.asarray()
+    print('Rank', rank, 'x', x[:20])
 
     # Apply forward
     if rank == 0:
@@ -80,8 +85,10 @@ def run():
         tstop = time.perf_counter()
         print("MPIMDCforward - Elapsed time:", tstop - tstart)
         print("MPIMDCforward - Dtype output:", yloc.dtype)
-
         sys.stdout.flush()
+
+    # Dot test
+    mpidottest(Fop, x, y, raiseerror=False, verb=True)
 
     # Compare with serial computation
     if rank == 0:
@@ -90,12 +97,18 @@ def run():
                    usematmul=True, saveGt=False, twosided=False)
         tstart = time.perf_counter()
         y_ = (Fop_ @ xloc).real
+
         tstop = time.perf_counter()
         print("MDCforward - Elapsed time:", tstop - tstart)
         print("MDCforward - Dtype output:", y_.dtype)
 
         print('Forward check', np.allclose(yloc, y_))
         print(yloc[:10], y_[:10])
+
+        dottest(Fop_, raiseerror=False, verb=True)
+
+
+
 
 if __name__ == '__main__':
     run()
