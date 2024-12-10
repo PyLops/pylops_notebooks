@@ -1,0 +1,13 @@
+name: devito_mpi
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - numpy>=1.21.0
+  - scipy>=1.8.0
+  - mpi4py
+  - pylops>=2.0
+  - matplotlib
+  - ipython
