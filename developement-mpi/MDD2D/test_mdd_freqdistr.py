@@ -1,7 +1,7 @@
 r"""
 Test MDD with synthetic seismic data distributing data over frequencies
 
-Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python test_mdd_freqdist.py
+Run as: export OMP_NUM_THREADS=4; export MKL_NUM_THREADS=4; export NUMBA_NUM_THREADS=4; mpiexec -n 2 python test_mdd_freqdistr.py
 """
 
 import numpy as np

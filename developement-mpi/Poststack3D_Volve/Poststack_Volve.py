@@ -47,8 +47,8 @@ def run():
     ############
 
     # Time axis
-    itmin = 100 # index of first time/depth sample in data used in inversion
-    itmax = 1200 # index of last time/depth sample in data used in inversion
+    itmin = 0 # index of first time/depth sample in data used in inversion
+    itmax = 1000 # index of last time/depth sample in data used in inversion
 
     # Wavelet estimation
     nt_wav = 21 # number of samples of statistical wavelet
@@ -157,7 +157,7 @@ def run():
     # Compute background AI (from well log analysis done externally)
     intercept = -3218.0003362662665
     gradient = 3.2468122679241023
-    aiinterp = intercept + gradient*vinterp
+    aiinterp = intercept + gradient * vinterp
     m0 = np.log(aiinterp)
     m0[np.isnan(m0)] = 0
 
@@ -198,12 +198,14 @@ def run():
                                          local_shapes=[(nil_r * nxl * nt,) for nil_r in nil_ranks], 
                                          dtype=np.float32)
     m0_dist[:] = m0.flatten().astype(np.float32)
-    ai0 = m0_dist.asarray().reshape((nil, nxl, nt))
 
     # Created PostStackLinearModelling
     PPop = PoststackLinearModelling(1e1*wav_est, nt0=nt, spatdims=(nil_rank[0], nxl))
     Top = Transpose((nil_rank[0], nxl, nt), (2, 0, 1))
     BDiag = pylops_mpi.basicoperators.MPIBlockDiag(ops=[Top.H @ PPop @ Top, ])
+
+    # Inversion
+    aiinvunreg_dist = pylops_mpi.optimization.basic.cgls(BDiag, d_dist, x0=m0_dist, niter=niter_sr, show=True)[0]
 
     # Regularized inversion with regularized equations
     LapOp = pylops_mpi.MPILaplacian(dims=(nil, nxl, nt), axes=(0, 1, 2), weights=(1, 1, 1),
@@ -214,24 +216,35 @@ def run():
     d0_dist[:] = 0.
     dstack_dist = pylops_mpi.StackedDistributedArray([d_dist, d0_dist])
 
-    dnorm_dist = BDiag.H @ d_dist
-    aiinv_dist = pylops_mpi.optimization.basic.cgls(StackOp, dstack_dist, 
+    aiinv_dist = pylops_mpi.optimization.basic.cgls(StackOp, dstack_dist,
                                                     x0=m0_dist, 
                                                     niter=niter_sr, 
                                                     show=True)[0]
+    
+    # Retrive entire models in rank0 and do postprocessing
+    d = d_dist.asarray().reshape((nil, nxl, nt))
+    ai0 = m0_dist.asarray().reshape((nil, nxl, nt))
     aiinv = aiinv_dist.asarray().reshape((nil, nxl, nt))
 
-    # Display background and inverted model
     if rank == 0:
+        
+        # Rescale to velocity
+        vp0 = (np.exp(ai0) - intercept) / gradient
+        vpinv = (np.exp(aiinv) - intercept) / gradient
+    
+        # Display background and inverted model
         explode_volume(np.exp(ai0).transpose(2, 1, 0),
-                       cmap='gist_rainbow', clipval=(3000, 18000),
+                       cmap='gist_rainbow', clipval=(1500, 18000),
                        figsize=(15, 10))
         plt.savefig(os.path.join(figdir, 'BackAI.png'), dpi=300)
         explode_volume(np.exp(aiinv).transpose(2, 1, 0),
-                       cmap='gist_rainbow', clipval=(3000, 18000),
+                       cmap='gist_rainbow', clipval=(1500, 18000),
                        figsize=(15, 10))
         plt.savefig(os.path.join(figdir, 'InvAI.png'), dpi=300)
-    
 
+        np.savez(os.path.join(figdir, 'Volve3Dinv'), d=d, vp0=vp0, vpinv=vpinv)
+
+        print('Done')
+            
 if __name__ == '__main__':
     run()

@@ -260,7 +260,7 @@ def run(ishotin, nshots):
         np.save(f'Image_sin{ishotin}_send{ishotend}', image)    
 
         explode_volume(image.transpose(2, 1, 0), cmap='gray', t=75, y=25,
-                    clipval=(-0.2*np.abs(image).max(), 0.2*np.abs(image).max()), figsize=(15, 5))
+                       clipval=(-0.2*np.abs(image).max(), 0.2*np.abs(image).max()), figsize=(15, 5))
         plt.savefig(os.path.join(figdir, f'Image_sin{ishotin}_send{ishotend}.png'), dpi=300)
         
     toc = time.perf_counter()  

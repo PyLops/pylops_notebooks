@@ -75,10 +75,9 @@ def run():
 
     # Data
     d_dist = BDiag @ m3d_dist
-    d_local = d_dist.local_array.reshape((ny_i, nx, nz))
     d = cp.asnumpy(d_dist.asarray().reshape((ny, nx, nz)))
     d_0_dist = BDiag @ mback3d_dist
-    d_0 = cp.asnumpy(d_dist.asarray().reshape((ny, nx, nz)))
+    d_0 = cp.asnumpy(d_0_dist.asarray().reshape((ny, nx, nz)))
 
     # Inversion using CGLS solver
     minv3d_iter_dist = pylops_mpi.optimization.basic.cgls(BDiag, d_dist, x0=mback3d_dist, niter=100, show=True)[0]
